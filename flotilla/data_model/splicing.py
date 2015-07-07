@@ -84,9 +84,11 @@ class SplicingData(BaseData):
         self.modality_visualizer = ModalitiesViz()
 
     @memoize
-    def modality_assignments(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, min_samples=20):
-        """Assigned modalities for these samples and features.
+    def modality_log2bf(self, sample_ids=None, feature_ids=None, data=None,
+                        groupby=None, min_samples=20):
+        """Get log2 bayes factor of how well events fit to each modality
+
+        Scores are in units of log2 bayes factors
 
         Parameters
         ----------
@@ -98,7 +100,7 @@ class SplicingData(BaseData):
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
         min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
+            Minimum number of samples to use per grouped celltype. Default 20
 
         Returns
         -------
@@ -116,19 +118,40 @@ class SplicingData(BaseData):
             groupby = pd.Series('all', index=data.index)
 
         grouped = data.groupby(groupby)
-        # if isinstance(min_samples, int) or min_samples > 1:
-        #     thresh = self._thresh_int
-        # elif isinstance(min_samples, float) or min_samples <= 1:
-        #     thresh = self._thresh_float
-        # else:
-        #     raise TypeError('Threshold for minimum samples for modality '
-        #                     'detection can only be int or float, '
-        #                     'not {}'.format(type(min_samples)))
         data = pd.concat([df.dropna(thresh=min_samples, axis=1)
                           for name, df in grouped])
-        assignments = data.groupby(groupby).apply(
+        scores = data.groupby(groupby).apply(
             self.modality_estimator.fit_transform)
-        return assignments
+        return scores
+
+    @memoize
+    def modality_assignments(self, sample_ids=None, feature_ids=None,
+                             data=None, groupby=None, min_samples=20):
+        """Assign a modality to each splicing event in each group
+
+        Parameters
+        ----------
+        sample_ids : list of str, optional
+            Which samples to use. If None, use all. Default None.
+        feature_ids : list of str, optional
+            Which features to use. If None, use all. Default None.
+        data : pandas.DataFrame, optional
+            If provided, use this dataframe instead of the sample_ids and
+            feature_ids provided
+        min_samples : int, optional
+            Minimum number of samples to use per grouped celltype. Default 10
+
+        Returns
+        -------
+        modality_assignments : pandas.DataFrame
+            The modality assignments of each feature, in each group of the
+            groupby
+        """
+        scores = self.modality_log2bf(sample_ids=sample_ids,
+                                      feature_ids=feature_ids, groupby=groupby,
+                                      data=data, min_samples=min_samples)
+        return scores.groupby(level=0, axis=0).apply(
+            self.modality_estimator.assign_modalities, reset_index=True)
 
     @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,

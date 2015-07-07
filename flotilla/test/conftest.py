@@ -277,16 +277,16 @@ def events(n_events):
 @pytest.fixture(scope='module')
 def modality_models():
     parameter = 20.
-    rv_included = stats.beta(parameter, 1)
-    rv_excluded = stats.beta(1, parameter)
+    rv_psi1 = stats.beta(parameter, 1)
+    rv_psi0 = stats.beta(1, parameter)
     rv_middle = stats.beta(parameter, parameter)
-    rv_uniform = stats.uniform(0, 1)
+    rv_ambiguous = stats.uniform(0, 1)
     rv_bimodal = stats.beta(1. / parameter, 1. / parameter)
 
-    models = {'included': rv_included,
-              'excluded': rv_excluded,
+    models = {'Psi~1': rv_psi1,
+              'Psi~0': rv_psi0,
               'middle': rv_middle,
-              'uniform': rv_uniform,
+              'ambiguous': rv_ambiguous,
               'bimodal': rv_bimodal}
     return models
 

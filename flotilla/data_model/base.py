@@ -19,6 +19,7 @@ from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, simple_twoway_scatter
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
+from ..util import memoize, cached_property
 from ..compute.outlier import OutlierDetection
 
 MINIMUM_FEATURE_SUBSET = 20

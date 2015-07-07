@@ -139,11 +139,10 @@ class TestSplicingData:
     def test_transition_distances(self, splicing, groupby, group_transitions):
         nmf_positions = splicing.nmf_space_positions(groupby=groupby)
 
-        test_distances = splicing.transition_distances(nmf_positions,
-                                                       group_transitions)
+        test = splicing.transition_distances(nmf_positions, group_transitions)
 
         nmf_positions.index = nmf_positions.index.droplevel(0)
-        true_distances = pd.Series(index=group_transitions)
+        true = pd.Series(index=group_transitions)
         for transition in group_transitions:
             try:
                 phenotype1, phenotype2 = transition
@@ -151,11 +150,11 @@ class TestSplicingData:
                     nmf_positions.ix[phenotype2] - nmf_positions.ix[
                         phenotype1])
                 # print phenotype1, phenotype2, norm
-                true_distances[transition] = norm
+                true[transition] = norm
             except KeyError:
                 pass
 
-        pdt.assert_series_equal(test_distances, true_distances)
+        pdt.assert_series_equal(test, true)
 
     def test_nmf_space_transitions(self, splicing, groupby, group_transitions):
         nmf_space_positions = splicing.nmf_space_positions(
@@ -220,30 +219,51 @@ class TestSplicingData:
 
         pdt.assert_equal(test_ylabel, true_ylabel)
 
-    def test_modality_assignments(self, splicing, groupby_params):
+    def test_modality_log2bf(self, splicing, groupby_params):
         sample_ids = None
         feature_ids = None
-        test_modality_assignments = splicing.modality_assignments(
+        min_samples = 20
+        test = splicing.modality_log2bf(
             sample_ids=sample_ids, feature_ids=feature_ids,
             groupby=groupby_params)
 
-        data = splicing._subset(splicing.data, sample_ids,
-                                feature_ids, require_min_samples=False)
+        data = splicing._subset(splicing.singles, sample_ids, feature_ids,
+                                require_min_samples=False)
+
         if groupby_params is None:
-            groupby_copy = pd.Series('all', index=data.index)
+            groupby = pd.Series('all', index=data.index)
         else:
-            groupby_copy = groupby_params
-        grouped = data.groupby(groupby_copy)
-        data = pd.concat([df.dropna(thresh=20, axis=1)
-                         for name, df in grouped])
-        true_assignments = data.groupby(groupby_copy).apply(
+            groupby = groupby_params.copy()
+
+        grouped = data.groupby(groupby)
+        data = pd.concat([df.dropna(thresh=min_samples, axis=1)
+                          for name, df in grouped])
+        true = data.groupby(groupby).apply(
             splicing.modality_estimator.fit_transform)
 
-        pdt.assert_frame_equal(test_modality_assignments, true_assignments)
+        pdt.assert_frame_equal(test, true)
+
+    def test_modality_assignments(self, splicing, groupby_params,
+                                  true_modalities):
+        sample_ids = None
+        feature_ids = None
+        min_samples = 20
+
+        test = splicing.modality_assignments(sample_ids=sample_ids,
+                                             feature_ids=feature_ids,
+                                             groupby=groupby_params,
+                                             min_samples=min_samples)
+
+        scores = splicing.modality_log2bf(sample_ids=sample_ids,
+                                          feature_ids=feature_ids,
+                                          groupby=groupby_params,
+                                          min_samples=min_samples)
+        true = scores.groupby(level=0, axis=0).apply(
+            splicing.modality_estimator.assign_modalities, reset_index=True)
+        pdt.assert_frame_equal(test, true)
 
     @pytest.mark.xfail
-    def test_modality_assignments_all_inputs_not_none(self, splicing,
-                                                      groupby, n):
+    def test_modality_assignments_all_inputs_not_none(self, splicing, groupby):
         sample_ids = None
         feature_ids = None
         splicing.modality_assignments(
@@ -252,8 +272,7 @@ class TestSplicingData:
             groupby=groupby)
 
     @pytest.mark.xfail
-    def test_modality_assignments_invalid_thresh(self, splicing,
-                                                 groupby):
+    def test_modality_assignments_invalid_thresh(self, splicing, groupby):
         sample_ids = None
         feature_ids = None
         splicing.modality_assignments(

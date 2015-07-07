@@ -100,7 +100,7 @@ before the pull request is merged.
 - [ ] If it introduces new functionality in is it tested?
   Check for code coverage. To run code coverage on only the file you changed,
   for example `flotilla/compute/splicing.py`, use this command: 
-  `py.test --cov flotilla/compute/splicing.py --cov-report term-missing flotilla/test/compute/test_splicing.py`
+  `coverage run --source flotilla --omit=test --module py.test flotilla/test/compute/test_splicing.py`
   which will show you which lines aren't covered by the tests.
 - [ ] Do the new functions have descriptive 
   [numpydoc](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt)

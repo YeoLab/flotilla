@@ -998,7 +998,7 @@ class Study(object):
                 **kwargs)
 
     def modality_assignments(self, sample_subset=None, feature_subset=None,
-                             expression_thresh=-np.inf, min_samples=10):
+                             expression_thresh=-np.inf, min_samples=20):
         """Get modality assignments of splicing data
 
         Parameters
@@ -1015,7 +1015,8 @@ class Study(object):
             Minimum expression value, of the original input. E.g. if the
             original input is already log-transformed, then this threshold is
             on the log values.
-
+        min_samples : int, optional
+            Minimum number of samples per event to calculate a modality
         Returns
         -------
         modalities : pandas.DataFrame
@@ -1039,6 +1040,51 @@ class Study(object):
             sample_ids, feature_ids, data=data,
             groupby=self.sample_id_to_phenotype, min_samples=min_samples)
 
+    def modality_log2bf(self, sample_subset=None, feature_subset=None,
+                             expression_thresh=-np.inf, min_samples=20):
+        """Get modality assignments of splicing data
+
+        Parameters
+        ----------
+        sample_subset : str or None, optional
+            Which subset of the samples to use, based on some phenotype
+            column in the experiment design data. If None, all samples are
+            used.
+        feature_subset : str or None, optional
+            Which subset of the features to used, based on some feature type
+            in the expression data (e.g. "variant"). If None, all features
+            are used.
+        expression_thresh : float, optional
+            Minimum expression value, of the original input. E.g. if the
+            original input is already log-transformed, then this threshold is
+            on the log values.
+        min_samples : int, optional
+            Minimum number of samples per event to calculate a modality
+
+        Returns
+        -------
+        modalities : pandas.DataFrame
+            A (n_phenotypes, n_events) shaped DataFrame of the assigned
+            modality
+        """
+        min_expression = self.expression.data.min().min()
+        if expression_thresh > -np.inf and expression_thresh > min_expression:
+            data = self.filter_splicing_on_expression(
+                expression_thresh=expression_thresh,
+                sample_subset=sample_subset)
+            sample_ids = None
+            feature_ids = None
+        else:
+            sample_ids = self.sample_subset_to_sample_ids(sample_subset)
+            feature_ids = self.feature_subset_to_feature_ids(
+                'splicing', feature_subset, rename=False)
+            data = None
+
+        return self.splicing.modality_log2bf(
+            sample_ids, feature_ids, data=data,
+            groupby=self.sample_id_to_phenotype, min_samples=min_samples)
+
+
     def modality_counts(self, sample_subset=None, feature_subset=None,
                         expression_thresh=-np.inf, min_samples=10):
         """Get number of splicing events in modality categories
@@ -1057,6 +1103,8 @@ class Study(object):
             Minimum expression value, of the original input. E.g. if the
             original input is already log-transformed, then this threshold is
             on the log values.
+        min_samples : int, optional
+            Minimum number of samples per event to calculate a modality
 
         Returns
         -------

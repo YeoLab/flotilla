@@ -107,20 +107,52 @@ class ModalityEstimator(object):
         logsumexps['ambiguous'] = self.logbf_thresh
         return logsumexps
 
-    def _guess_modality(self, logsumexps):
-        """Guess the most likely modality.
+    def assign_modalities(self, log2_bayes_factors, reset_index=False):
+        """Guess the most likely modality for each event
 
-        If no modalilites have logsumexp'd logliks greater than the log Bayes
-        factor threshold, then they are assigned the 'uniform' modality,
-        which is the null hypothesis
+        For each event that has at least one non-NA value, if no modalilites
+        have logsumexp'd logliks greater than the log Bayes factor threshold,
+        then they are assigned the 'ambiguous' modality, because we cannot
+        reject the null hypothesis that these did not come from the uniform
+        distribution.
+
+        Parameters
+        ----------
+        log2_bayes_factors : pandas.DataFrame
+            A (4, n_events) dataframe with bayes factors for the Psi~1, Psi~0,
+            bimodal, and middle modalities. If an event has no bayes factors
+            for any of those modalities, it is ignored
+        reset_index : bool
+            If True, remove the first level of the index from the dataframe.
+            Useful if you are using this function to apply to a grouped
+            dataframe where the first level is something other than the
+            modality, e.g. the celltype
+
+        Returns
+        -------
+        modalities : pandas.Series
+            A (n_events,) series with the most likely modality for each event
+
         """
-
-        if all(logsumexps[self.one_param_models.keys()] > self.logbf_thresh):
-            return logsumexps[self.one_param_models.keys()].idxmax()
+        if reset_index:
+            x = log2_bayes_factors.reset_index(level=0, drop=True)
         else:
-            other_models = logsumexps.index.difference(
-                self.one_param_models.keys())
-            return logsumexps[other_models].idxmax()
+            x = log2_bayes_factors
+        not_na = (x.notnull() > 0).any()
+        not_na_columns = not_na[not_na].index
+        x.ix['ambiguous', not_na_columns] = self.logbf_thresh
+        return x.idxmax()
+
+    def _fit_transform_one_step(self, data, models):
+        non_na = data.count() > 0
+        non_na_columns = non_na[non_na].index
+        data_non_na = data[non_na_columns]
+        if data_non_na.empty:
+            return pd.DataFrame()
+        else:
+            return data_non_na.apply(lambda x: pd.Series(
+                {k: v.logsumexp_logliks(x)
+                 for k, v in models.iteritems()}), axis=0)
 
     def fit_transform(self, data):
         """Get the modality assignments of each splicing event in the data
@@ -133,9 +165,9 @@ class ModalityEstimator(object):
 
         Returns
         -------
-        modality_assignments : pandas.Series
-            A (n_events,) series of the estimated modality for each splicing
-            event
+        log2_bayes_factors : pandas.DataFrame
+            A (n_modalities, n_events) dataframe of the estimated log2
+            bayes factor for each splicing event, for each modality
 
         Raises
         ------
@@ -145,44 +177,29 @@ class ModalityEstimator(object):
         assert np.all(data.values.flat[np.isfinite(data.values.flat)] <= 1)
         assert np.all(data.values.flat[np.isfinite(data.values.flat)] >= 0)
 
-        # If all values are NA, don't calculate anything
-        if (data.count() > 0).sum() == 0:
-            return pd.Series(np.nan, index=data.columns)
+        # Estimate Psi~0/Psi~1 first (only one parameter change with each
+        # paramterization)
+        logbf_one_param = self._fit_transform_one_step(data,
+                                                       self.one_param_models)
 
-        # Estimate Psi~0/Psi~1 first
-        non_na_columns = data.count() > 0
-        logsumexp_logliks1 = data.ix[:, non_na_columns].apply(
-            lambda x: pd.Series(
-                {k: v.logsumexp_logliks(x)
-                 for k, v in self.one_param_models.iteritems()}), axis=0)
-        logsumexp_logliks1.ix['ambiguous'] = self.logbf_thresh
-        # na_columns1 = data.count() == 0
-        # logsumexp_logliks1[na_columns1] = np.nan
-        modality_assignments1 = logsumexp_logliks1.idxmax()
+        # Take everything that was below the threshold for included/excluded
+        # and estimate bimodal and middle (two parameters change in each
+        # parameterization
+        ind = (logbf_one_param < self.logbf_thresh).all()
+        ambiguous_columns = ind[ind].index
+        data2 = data.ix[:, ambiguous_columns]
+        logbf_two_param = self._fit_transform_one_step(data2,
+                                                       self.two_param_models)
+        log2_bayes_factors = pd.concat([logbf_one_param, logbf_two_param],
+                                       axis=0)
 
-        # Take everything that was ambiguous for included/excluded and estimate
-        # bimodal and middle
-        series = modality_assignments1 == 'ambiguous'
-        ind = series[series].index
-        data2 = data.ix[:, ind]
-        non_na_columns = data2.count() > 0
-        logsumexp_logliks2 = data2.ix[:, non_na_columns].apply(
-            lambda x: pd.Series(
-                {k: v.logsumexp_logliks(x)
-                 for k, v in self.two_param_models.iteritems()}), axis=0)
-        logsumexp_logliks2.ix['ambiguous'] = self.logbf_thresh
-        # na_columns2 = data.count() == 0
-        # logsumexp_logliks2[na_columns2] = np.nan
-        modality_assignments2 = logsumexp_logliks2.idxmax()
-
-        # Combine the results
-        modality_assignments = modality_assignments1
-        modality_assignments[modality_assignments2.index] = \
-            modality_assignments2.values
-
-        # Add back the NA columns
-        modality_assignments = modality_assignments.reindex(data.columns)
-        return modality_assignments
+        # Make sure the returned dataframe has the same number of columns
+        empty = data.count() == 0
+        empty_columns = empty[empty].index
+        empty_df = pd.DataFrame(np.nan, index=log2_bayes_factors.index,
+                                columns=empty_columns)
+        log2_bayes_factors = pd.concat([log2_bayes_factors, empty_df], axis=1)
+        return log2_bayes_factors
 
 
 def switchy_score(array):
