@@ -78,7 +78,7 @@ class SplicingData(BaseData):
 
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
-        self.modality_estimator = ModalityEstimator(step=1., vmax=10.)
+        self.modality_estimator = ModalityEstimator(step=1., vmax=20.)
         # self.modalities_calculator = Modalities(excluded_max=excluded_max,
         # included_min=included_min)
         self.modality_visualizer = ModalitiesViz()

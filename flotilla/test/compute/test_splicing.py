@@ -107,11 +107,11 @@ class TestModalityModel(object):
 class TestModalityEstimator(object):
     @pytest.fixture
     def step(self):
-        return 1
+        return 1.
 
     @pytest.fixture
     def vmax(self):
-        return 10
+        return 20.
 
     @pytest.fixture(params=[2, 3])
     def logbf_thresh(self, request):
@@ -224,7 +224,7 @@ class TestModalityEstimator(object):
         log2bf = estimator.fit_transform(splicing_data)
         test = estimator.assign_modalities(log2bf)
 
-        x = log2bf
+        x = log2bf.copy()
         not_na = (x.notnull() > 0).any()
         not_na_columns = not_na[not_na].index
         x.ix['ambiguous', not_na_columns] = estimator.logbf_thresh
