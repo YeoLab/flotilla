@@ -28,5 +28,3 @@ VOLUME /root/flotilla_packages
 
 EXPOSE 8888
 ENTRYPOINT run_notebook.sh
-RUN apt-get install -y r-base
-RUN pip install --upgrade rpy2
