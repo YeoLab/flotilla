@@ -344,7 +344,7 @@ def nmf_space_transitions(nmf_space_positions, feature_id,
     df = nmf_space_positions.ix[feature_id]
 
     if ax is None:
-        ax = plt.gcf()
+        ax = plt.gca()
 
     for color, s in df.groupby(phenotype_to_color, axis=0):
         phenotype = s.index[0]
