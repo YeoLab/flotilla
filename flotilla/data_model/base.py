@@ -993,8 +993,7 @@ class BaseData(object):
 
     def _violinplot(self, feature_id, sample_ids=None,
                     phenotype_groupby=None,
-                    phenotype_order=None, ax=None, color=None,
-                    label_pooled=False, **kwargs):
+                    phenotype_order=None, ax=None, color=None, **kwargs):
         """For compatiblity across data types, can specify _violinplot
         """
         sample_ids = self.data.index if sample_ids is None else sample_ids
@@ -1019,7 +1018,7 @@ class BaseData(object):
             feature_id.split('@')[0].split(':')[:2]))
 
         violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
-                   pooled_data=pooled, order=phenotype_order,
+                   pooled=pooled, order=phenotype_order,
                    title=title, ax=ax,
                    outliers=outliers, **kwargs)
 

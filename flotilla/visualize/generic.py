@@ -58,11 +58,15 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
         tidy_pooled = pooled.dropna().to_frame().join(groupby)
         tidy_pooled = tidy_pooled.reset_index()
         tidy_pooled = tidy_pooled.rename(columns={pooled.name: ylabel})
+    else:
+        tidy_pooled = None
 
     if outliers is not None:
         tidy_outliers = outliers.dropna().to_frame().join(groupby)
         tidy_outliers = tidy_outliers.reset_index()
         tidy_outliers = tidy_outliers.rename(columns={outliers.name: ylabel})
+    else:
+        tidy_outliers = None
 
     if outliers is not None and not outliers.dropna().empty:
         sns.violinplot(x=groupby.name, y=ylabel, data=tidy_outliers,
@@ -82,7 +86,8 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
                       jitter=True, order=order, ax=ax, palette=color_ordered)
     if pooled is not None and not pooled.dropna().empty:
         sns.stripplot(x=groupby.name, y=ylabel, data=tidy_pooled,
-                      jitter=True, order=order, ax=ax, color='#262626')
+                      jitter=True, order=order, ax=ax, color='#262626',
+                      zorder=100, s=20)
     sizes = tidy_singles.groupby(groupby.name).size()
     if order is None:
         order = sizes.keys()
