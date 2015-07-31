@@ -83,7 +83,7 @@ class SplicingData(BaseData):
         # included_min=included_min)
         self.modality_visualizer = ModalitiesViz()
 
-    @memoize
+    # @memoize
     def modality_log2bf(self, sample_ids=None, feature_ids=None, data=None,
                         groupby=None, min_samples=20):
         """Get log2 bayes factor of how well events fit to each modality
@@ -124,7 +124,7 @@ class SplicingData(BaseData):
             self.modality_estimator.fit_transform)
         return scores
 
-    @memoize
+    # @memoize
     def modality_assignments(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None, min_samples=20):
         """Assign a modality to each splicing event in each group
@@ -153,7 +153,7 @@ class SplicingData(BaseData):
         return scores.groupby(level=0, axis=0).apply(
             self.modality_estimator.assign_modalities, reset_index=True)
 
-    @memoize
+    # @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
                         groupby=None, min_samples=20):
         """Count the number of each modalities of these samples and features
@@ -314,7 +314,7 @@ class SplicingData(BaseData):
         reduced = self.nmf.transform(binned.T)
         return reduced
 
-    @memoize
+    # @memoize
     def _is_nmf_space_x_axis_excluded(self, phenotype_groupby):
         nmf_space_positions = self.nmf_space_positions(phenotype_groupby)
 
@@ -392,7 +392,7 @@ class SplicingData(BaseData):
             large_diff = None
         return singles, pooled, not_measured_in_pooled, large_diff
 
-    @memoize
+    # @memoize
     def _diff_from_singles(self, data,
                            feature_ids=None, scaled=True, dropna=True):
         """Calculate the difference between pooled and singles' psis
