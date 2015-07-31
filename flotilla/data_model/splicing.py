@@ -358,7 +358,6 @@ class SplicingData(BaseData):
                                                col_wrap=col_wrap,
                                                violinplot_kws=violinplot_kws)
 
-    @memoize
     def pooled_inconsistent(self, data, feature_ids=None,
                             fraction_diff_thresh=FRACTION_DIFF_THRESH):
         """Return splicing events which pooled samples are consistently
