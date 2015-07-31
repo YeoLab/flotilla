@@ -1014,8 +1014,8 @@ class BaseData(object):
         # feature_id, renamed = feature_id
         # else:
         # renamed = self.feature_renamer(feature_id)
-        title = '{}\n{}'.format(renamed, ':'.join(
-            feature_id.split('@')[0].split(':')[:2]))
+        title = '{}\n{}'.format(renamed, '\n'.join(
+            feature_id.split('@')))
 
         violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
                    pooled=pooled, order=phenotype_order,
