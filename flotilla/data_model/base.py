@@ -1068,7 +1068,8 @@ class BaseData(object):
         if nrows == 1:
             axesgrid = np.array([axesgrid])
 
-        for feature_id, ax in zip(feature_ids, axesgrid.flat):
+        axes_iter = axesgrid.flat
+        for feature_id, ax in zip(feature_ids, axes_iter):
             # if self.data_type == 'expression':
             # axes = [axes]
 
@@ -1077,6 +1078,11 @@ class BaseData(object):
                              phenotype_order=phenotype_order, ax=ax,
                              color=color, **violinplot_kws)
             sns.despine()
+
+        # Turn off empty axes (ones that were never iterated over)
+        for ax in axes_iter:
+            ax.axis('off')
+
         fig.tight_layout()
 
     def plot_two_samples(self, sample1, sample2, fillna=None,
