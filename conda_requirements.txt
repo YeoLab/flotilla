@@ -28,3 +28,4 @@ ipython
 jsonschema
 pyyaml
 flake8
+ipywidgets
