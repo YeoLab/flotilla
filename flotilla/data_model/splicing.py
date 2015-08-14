@@ -378,7 +378,7 @@ class SplicingData(BaseData):
         # and perform an arc-cosine transform to make the data range from
         # -pi to pi
         if standardize:
-            subset = subset.fillna(0.5)
+            subset = subset.fillna(subset.mean())
             subset = -2 * np.arccos(subset * 2 - 1) + np.pi
         means = subset.mean()
 
