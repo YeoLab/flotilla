@@ -1173,7 +1173,7 @@ class BaseData(object):
             x = data
             x[x <= 0] = np.min(x[x > 0]).min()
             z = whiten(x.apply(lambda y: np.log2(y / y.mean(axis=0)), 0))
-            data = z
+            data = pd.DataFrame(z, index=data.index, columns=data.columns)
 
         data = data.fillna(data.mean())
         if sample_id_to_color is not None:
