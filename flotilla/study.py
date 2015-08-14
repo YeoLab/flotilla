@@ -534,10 +534,10 @@ class Study(object):
 
                 reader = cls.readers[resource['format']]
 
-                kws = {'header': supplemental.pop('header', 0),
-                       'index_col': supplemental.pop('index_col', 0),
-                       'key': supplemental.pop('key', None),
-                       'compression': supplemental.pop(
+                kws = {'header': resource.pop('header', 0),
+                       'index_col': resource.pop('index_col', 0),
+                       'key': resource.pop('key', None),
+                       'compression': resource.pop(
                            'compression', None)}
                 kws = cls._remove_nones(kws)
 

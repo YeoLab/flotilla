@@ -42,7 +42,7 @@ class TestSplicingData:
         true_subset = true_subset.dropna(how='all', axis=1).dropna(how='all',
                                                                    axis=0)
 
-        true_subset = true_subset.fillna(0.5)
+        true_subset = true_subset.fillna(true_subset.mean())
         true_subset = -2 * np.arccos(true_subset*2-1) + np.pi
 
         pdt.assert_frame_equal(test_subset, true_subset)

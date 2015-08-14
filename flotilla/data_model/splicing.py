@@ -1,3 +1,4 @@
+from itertools import chain
 from collections import Iterable
 import sys
 
@@ -531,3 +532,8 @@ class SplicingData(BaseData):
             sample_id_to_color=sample_id_to_color,
             metric=metric, method=method, scale_fig_by_data=scale_fig_by_data,
             norm_features=False, **kwargs)
+
+    def _expression_ids(self, feature_ids):
+        """Get the gene ids corresponding to the splicing ids provided"""
+        return list(chain(*self.feature_data[self.feature_expression_id_col][
+            feature_ids].str.split(',').values))
