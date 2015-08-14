@@ -29,7 +29,7 @@ from .visualize.color import blue
 from .visualize.ipython_interact import Interactive
 from .datapackage import FLOTILLA_DOWNLOAD_DIR
 from .util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
-    load_pickle_df, timestamp, cached_property
+    load_pickle_df, load_hdf, timestamp, cached_property
 
 SPECIES_DATA_PACKAGE_BASE_URL = 'https://s3-us-west-2.amazonaws.com/' \
                                 'flotilla-projects'
@@ -62,7 +62,8 @@ class Study(object):
                'csv': load_csv,
                'json': load_json,
                'pickle_df': load_pickle_df,
-               'gzip_pickle_df': load_gzip_pickle_df}
+               'gzip_pickle_df': load_gzip_pickle_df,
+               'hdf': load_hdf}
 
     _default_reducer_kwargs = {'whiten': False,
                                'show_point_labels': False,
@@ -478,6 +479,11 @@ class Study(object):
         else:
             return None
 
+    @staticmethod
+    def _remove_nones(d):
+        """Remove keys whose value is None in a dict"""
+        return dict((k, v) for k, v in d.items() if v is not None)
+
     @classmethod
     def from_datapackage(
             cls, datapackage, datapackage_dir='./',
@@ -514,26 +520,28 @@ class Study(object):
                     name = supplemental['name']
 
                     reader = cls.readers[supplemental['format']]
-                    compression = None if 'compression' not in \
-                                          supplemental else \
-                        supplemental['compression']
-                    header = supplemental.pop('header', 0)
-                    index_col = supplemental.pop('index_col', 0)
-                    df = reader(filename, compression=compression,
-                                header=header, index_col=index_col)
+                    kws = {'header': supplemental.pop('header', 0),
+                           'index_col': supplemental.pop('index_col', 0),
+                           'key': supplemental.pop('key', None),
+                           'compression': supplemental.pop(
+                               'compression', None)}
+                    kws = cls._remove_nones(kws)
+                    df = reader(filename, **kws)
                     supplemental_data[name] = df
             else:
 
                 name = resource['name']
 
                 reader = cls.readers[resource['format']]
-                compression = None if 'compression' not in resource else \
-                    resource['compression']
-                header = resource.pop('header', 0)
-                index_col = resource.pop('index_col', 0)
 
-                dfs[name] = reader(filename, compression=compression,
-                                   header=header, index_col=index_col)
+                kws = {'header': supplemental.pop('header', 0),
+                       'index_col': supplemental.pop('index_col', 0),
+                       'key': supplemental.pop('key', None),
+                       'compression': supplemental.pop(
+                           'compression', None)}
+                kws = cls._remove_nones(kws)
+
+                dfs[name] = reader(filename, **kws)
 
                 for key in set(resource.keys()).difference(
                         DATAPACKAGE_RESOURCE_COMMON_KWS):
