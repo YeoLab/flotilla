@@ -8,8 +8,6 @@ import seaborn as sns
 
 from .base import BaseData
 from ..compute.decomposition import DataFrameNMF
-from ..compute.splicing import ModalityEstimator
-from ..visualize.splicing import ModalitiesViz
 from ..util import memoize, timestamp, cached_property
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
     lavalamp_pooled_inconsistent, nmf_space_transitions

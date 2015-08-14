@@ -6,7 +6,7 @@ import os
 import sys
 import warnings
 
-from IPython.html.widgets import interact, TextWidget, ButtonWidget
+from ipywidgets import interact, Text, Button
 import matplotlib.pyplot as plt
 
 from ..visualize.color import red
@@ -179,8 +179,8 @@ class Interactive(object):
             except AttributeError:
                 pass
 
-        savefile = TextWidget(description='savefile')
-        save_widget = ButtonWidget(description='save')
+        savefile = Text(description='savefile')
+        save_widget = Button(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]
         save_widget.on_click(save)
@@ -268,8 +268,8 @@ class Interactive(object):
             self.maybe_make_directory(savefile.value)
             plt.gcf().savefig(savefile, format=extension.lstrip('.'))
 
-        savefile = TextWidget(description='savefile')
-        save_widget = ButtonWidget(description='save')
+        savefile = Text(description='savefile')
+        save_widget = Button(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]
         save_widget.on_click(save)
@@ -352,58 +352,12 @@ class Interactive(object):
             except AttributeError:
                 pass
 
-        savefile = TextWidget(description='savefile')
-        save_widget = ButtonWidget(description='save')
+        savefile = Text(description='savefile')
+        save_widget = Button(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]
         save_widget.on_click(save)
         return gui
-
-    @staticmethod
-    def interactive_localZ(self):
-
-        from IPython.html.widgets import interact
-
-        def do_interact(data_type='expression', sample1='', sample2='',
-                        pCut='0.01'):
-
-            for k, v in locals().iteritems():
-                if k == 'self':
-                    continue
-                sys.stdout.write('{} : {}'.format(k, v))
-
-            pCut = float(pCut)
-            assert pCut > 0
-            if data_type == 'expression':
-                data_obj = self.expression
-            if data_type == 'splicing':
-                data_obj = self.splicing
-
-            try:
-                assert sample1 in data_obj.df.index
-            except:
-                sys.stdout.write("sample: {}, is not in {} DataFrame, "
-                                 "try a different sample ID".format(sample1,
-                                                                    data_type))
-                return
-            try:
-                assert sample2 in data_obj.df.index
-            except:
-                sys.stdout.write("sample: {}, is not in {} DataFrame, "
-                                 "try a different sample ID".format(sample2,
-                                                                    data_type))
-                return
-            self.localZ_result = data_obj.plot_twoway(sample1, sample2,
-                                                      pCut=pCut).result_
-            sys.stdout.write("local_z finished, find the result in "
-                             "<this_object>.localZ_result_")
-
-        return interact(do_interact,
-                        data_type=('expression', 'splicing'),
-                        sample1='replaceme',
-                        sample2='replaceme',
-                        pCut='0.01')
-
 
     @staticmethod
     def interactive_choose_outliers(self,
@@ -562,9 +516,9 @@ class Interactive(object):
             gui.widget.result.savefig(savefile.value,
                                       format=extension.lstrip('.'))
 
-        savefile = TextWidget(description='savefile',
+        savefile = Text(description='savefile',
                               value='figures/clustermap.pdf')
-        save_widget = ButtonWidget(description='save')
+        save_widget = Button(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]
         save_widget.on_click(save)
@@ -623,9 +577,9 @@ class Interactive(object):
             gui.widget.result.savefig(savefile.value,
                                       format=extension.lstrip('.'))
 
-        savefile = TextWidget(description='savefile',
+        savefile = Text(description='savefile',
                               value='figures/correlations.pdf')
-        save_widget = ButtonWidget(description='save')
+        save_widget = Button(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]
         save_widget.on_click(save)
