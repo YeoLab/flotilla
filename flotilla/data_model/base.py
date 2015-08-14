@@ -1079,7 +1079,8 @@ class BaseData(object):
                              color=color, **violinplot_kws)
             sns.despine()
 
-        # Turn off empty axes (ones that were never iterated over)
+        # Turn off empty axes (ones that were never iterated over and thus
+        # have nothing plotted on them)
         for ax in axes_iter:
             ax.axis('off')
 
