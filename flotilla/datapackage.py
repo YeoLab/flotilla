@@ -73,6 +73,55 @@ def check_if_already_downloaded(url,
     return filename
 
 
+def write_small_or_big_data(data, resource_name, datapackage_dir,
+                            max_size=1e7):
+    """Save dataframe as a gzipped CSV if small, HDF if large
+
+    "Large" is determined from the product of the data shape, with a maximum
+    of `max_size`.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        The data to save
+    resource_name : str
+        Name of the data for saving
+    datapackage_dir : str
+        Absolute path, where to save the data to
+    max_size : int or float
+        Maximum size of the data to save as a "smaller" CSV format, where
+        ncol*nrow < max_size
+
+    Returns
+    -------
+    info : dict
+        Information about the written file, e.g. path, format, compression to
+        save with the datapackage
+    """
+    nrow, ncol = data.shape
+
+    info = {}
+    if nrow * ncol < max_size:
+        # If data is smallish, save as a gzipped csv
+        basename = '{}.csv.gz'.format(resource_name)
+        data_filename = '{}/{}'.format(datapackage_dir, basename)
+        with gzip.open(data_filename, 'wb') as f:
+            data.to_csv(f)
+            info['compression'] = 'gzip'
+        info['format'] = 'csv'
+    else:
+        # If data is big, save as an HDF file
+        basename = '{}.hdf'.format(resource_name)
+        data_filename = '{}/{}'.format(datapackage_dir, basename)
+        key = 'data'
+        info['format'] = 'hdf'
+        info['key'] = key
+        data.to_hdf(data_filename, key)
+    info['path'] = basename
+    return info
+
+
+
 def make_study_datapackage(study_name, metadata,
                            expression_data=None,
                            splicing_data=None,
@@ -131,13 +180,9 @@ def make_study_datapackage(study_name, metadata,
         datapackage['resources'].append({'name': resource_name})
         resource = datapackage['resources'][-1]
 
-        basename = '{}.csv.gz'.format(resource_name)
-        data_filename = '{}/{}'.format(datapackage_dir, basename)
-        with gzip.open(data_filename, 'wb') as f:
-            data.to_csv(f)
-        resource['path'] = basename
-        resource['compression'] = 'gzip'
-        resource['format'] = 'csv'
+        info = write_small_or_big_data(data, resource_name, datapackage_dir)
+        resource.update(info)
+
         if kws is not None:
             for key, value in kws.iteritems():
                 if key == 'phenotype_to_color':
@@ -152,16 +197,11 @@ def make_study_datapackage(study_name, metadata,
     supplemental['resources'] = []
     for supplemental_name, data in supplemental_kws.items():
         resource = {}
-
-        basename = '{}.csv.gz'.format(supplemental_name)
-        data_filename = '{}/{}'.format(datapackage_dir, basename)
-        with gzip.open(data_filename, 'wb') as f:
-            data.to_csv(f)
-
         resource['name'] = supplemental_name
-        resource['path'] = basename
-        resource['compression'] = 'gzip'
-        resource['format'] = 'csv'
+
+        info = write_small_or_big_data(data, supplemental_name,
+                                       datapackage_dir)
+        resource.update(info)
         supplemental['resources'].append(resource)
 
     filename = '{}/datapackage.json'.format(datapackage_dir)
