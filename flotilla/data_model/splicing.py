@@ -78,226 +78,8 @@ class SplicingData(BaseData):
 
         self.bins = np.arange(0, 1 + self.binsize, self.binsize)
 
-        self.modality_estimator = ModalityEstimator(step=1., vmax=20.)
-        # self.modalities_calculator = Modalities(excluded_max=excluded_max,
-        # included_min=included_min)
-        self.modality_visualizer = ModalitiesViz()
-
-    # @memoize
-    def modality_log2bf(self, sample_ids=None, feature_ids=None, data=None,
-                        groupby=None, min_samples=20):
-        """Get log2 bayes factor of how well events fit to each modality
-
-        Scores are in units of log2 bayes factors
-
-        Parameters
-        ----------
-        sample_ids : list of str, optional
-            Which samples to use. If None, use all. Default None.
-        feature_ids : list of str, optional
-            Which features to use. If None, use all. Default None.
-        data : pandas.DataFrame, optional
-            If provided, use this dataframe instead of the sample_ids and
-            feature_ids provided
-        min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 20
-
-        Returns
-        -------
-        modality_assignments : pandas.Series
-            The modality assignments of each feature given these samples
-        """
-        if data is None:
-            data = self._subset(self.singles, sample_ids, feature_ids,
-                                require_min_samples=False)
-        else:
-            if feature_ids is not None and sample_ids is not None:
-                raise ValueError('Can only specify `sample_ids` and '
-                                 '`feature_ids` or `data`, but not both.')
-        if groupby is None:
-            groupby = pd.Series('all', index=data.index)
-
-        grouped = data.groupby(groupby)
-        data = pd.concat([df.dropna(thresh=min_samples, axis=1)
-                          for name, df in grouped])
-        scores = data.groupby(groupby).apply(
-            self.modality_estimator.fit_transform)
-        return scores
-
-    # @memoize
-    def modality_assignments(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, min_samples=20):
-        """Assign a modality to each splicing event in each group
-
-        Parameters
-        ----------
-        sample_ids : list of str, optional
-            Which samples to use. If None, use all. Default None.
-        feature_ids : list of str, optional
-            Which features to use. If None, use all. Default None.
-        data : pandas.DataFrame, optional
-            If provided, use this dataframe instead of the sample_ids and
-            feature_ids provided
-        min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
-
-        Returns
-        -------
-        modality_assignments : pandas.DataFrame
-            The modality assignments of each feature, in each group of the
-            groupby
-        """
-        scores = self.modality_log2bf(sample_ids=sample_ids,
-                                      feature_ids=feature_ids, groupby=groupby,
-                                      data=data, min_samples=min_samples)
-        return scores.groupby(level=0, axis=0).apply(
-            self.modality_estimator.assign_modalities, reset_index=True)
-
-    # @memoize
-    def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
-                        groupby=None, min_samples=20):
-        """Count the number of each modalities of these samples and features
-
-        Parameters
-        ----------
-        sample_ids : list of str
-            Which samples to use. If None, use all. Default None.
-        feature_ids : list of str
-            Which features to use. If None, use all. Default None.
-        data : pandas.DataFrame, optional
-            If provided, use this dataframe instead of the sample_ids and
-            feature_ids provided
-        min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
-
-        Returns
-        -------
-        modalities_counts : pandas.Series
-            The number of events detected in each modality
-        """
-        assignments = self.modality_assignments(sample_ids, feature_ids, data,
-                                                groupby, min_samples)
-        counts = assignments.apply(lambda x: x.groupby(x).size(), axis=1)
-        return counts
-
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
-
-    def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
-                                data=None, ax=None, title=None,
-                                min_samples=20):
-        """Plot events modality assignments in NMF space
-
-        This will calculate modalities on all samples provided, without
-        grouping them by celltype. This is because each NMF axis can only show
-        one set of sample ids' modalties.
-
-        Parameters
-        ----------
-        sample_ids : list of str
-            Which samples to use. If None, use all. Default None.
-        feature_ids : list of str
-            Which features to use. If None, use all. Default None.
-        data : pandas.DataFrame, optional
-            If provided, use this dataframe instead of the sample_ids and
-            feature_ids provided
-        min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
-        ax : matplotlib.axes.Axes object
-            Axes to plot on. If none, gets current axes
-        title : str
-            Title of the reduced space plot
-        """
-        groupby = pd.Series('all', self.data.index)
-        modality_assignments = self.modality_assignments(sample_ids,
-                                                         feature_ids,
-                                                         data, groupby,
-                                                         min_samples)
-        modality_assignments = pd.Series(modality_assignments.values[0],
-                                         index=modality_assignments.columns)
-
-        self.modality_visualizer.plot_reduced_space(
-            self.binned_nmf_reduced(sample_ids, feature_ids),
-            modality_assignments, ax=ax, title=title,
-            xlabel=self._nmf_space_xlabel(groupby),
-            ylabel=self._nmf_space_ylabel(groupby))
-
-    def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, phenotype_to_color=None,
-                             percentages=False, ax=None, min_samples=20):
-        """Make grouped barplots of the number of modalities per group
-
-        Parameters
-        ----------
-        sample_ids : None or list of str
-            Which samples to use. If None, use all
-        feature_ids : None or list of str
-            Which features to use. If None, use all
-        color : None or matplotlib color
-            Which color to use for plotting the lavalamps of these features
-            and samples
-        min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
-        """
-
-        counts = self.modality_counts(
-            sample_ids, feature_ids, data=data, groupby=groupby,
-            min_samples=min_samples)
-
-        # make sure this is always a dataframe
-        if isinstance(counts, pd.Series):
-            counts = pd.DataFrame([counts.values],
-                                  index=counts.name,
-                                  columns=counts.index)
-        return self.modality_visualizer.bar(counts, phenotype_to_color,
-                                            percentages=percentages, ax=ax)
-
-    def plot_event_modality_estimation(self, event_id, sample_ids=None,
-                                       data=None,
-                                       groupby=None, min_samples=20):
-        """Plots the mathematical reasoning for an event's modality assignment
-
-        Parameters
-        ----------
-        event_id : str
-            Unique name of the splicing event
-        sample_ids : list of str, optional
-            Which sample ids to use
-        data : pandas.DataFrame
-            Which data to use, if e.g. you filtered splicing events on
-            expression data
-        groupby : mapping, optional
-            A sample id to celltype mapping
-        min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
-        """
-        if data is None:
-            data = self._subset(self.singles, sample_ids,
-                                require_min_samples=False)
-        else:
-            if sample_ids is not None:
-                raise ValueError(
-                    'Can only specify `sample_ids` or `data`, but not both.')
-        if groupby is None:
-            groupby = pd.Series('all', index=data.index)
-
-        grouped = data.groupby(groupby)
-        if isinstance(min_samples, int):
-            thresh = self._thresh_int
-        elif isinstance(min_samples, float):
-            thresh = self._thresh_float
-        else:
-            raise TypeError('Threshold for minimum samples for modality '
-                            'detection can only be int or float, '
-                            'not {}'.format(type(min_samples)))
-        data = pd.concat([df.dropna(thresh=thresh(df, min_samples), axis=1)
-                          for name, df in grouped])
-        event = data[event_id]
-        renamed = self.feature_renamer(event_id)
-        logliks = self.modality_estimator._loglik(event)
-        logsumexps = self.modality_estimator._logsumexp(logliks)
-        self.modality_visualizer.event_estimation(event, logliks, logsumexps,
-                                                  renamed=renamed)
 
     @cached_property()
     def nmf(self):
@@ -632,10 +414,9 @@ class SplicingData(BaseData):
             A sample id to phenotype mapping
         n : int or float
             If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
+            required to calculate. If a float, then require this
+            fraction of samples to calculate NMF space, e.g. if 0.6, then at
+            least 60% of samples must have an event detected
 
         Returns
         -------
@@ -717,11 +498,9 @@ class SplicingData(BaseData):
             distances between
         n : int or float
             If int, then this is the absolute number of cells that are minimum
-            required to calculate modalities. If a float, then require this
-            fraction of samples to calculate modalities, e.g. if 0.6, then at
-            least 60% of samples must have an event detected for modality
-            detection
-
+            required to calculate. If a float, then require this
+            fraction of samples to calculate, e.g. if 0.6, then at
+            least 60% of samples must have an event detected for voyage space
         Returns
         -------
         nmf_space_transitions : pandas.DataFrame

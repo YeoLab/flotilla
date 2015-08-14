@@ -426,13 +426,6 @@ def true_modalities(events, modality_models, groups):
     return pd.DataFrame(data)
 
 
-# @pytest.fixture(scope='module')
-# def true_modalities_fixed(events, modality_models, groups_fixed):
-#     data = dict((e, dict((g, (np.random.choice(modality_models.keys())))
-#                          for g in groups_fixed)) for e in events)
-#     return pd.DataFrame(data)
-
-
 @pytest.fixture(scope='module')
 def splicing_data(samples, events, true_modalities, modality_models, groupby):
     df = pd.DataFrame(index=samples, columns=events)
@@ -462,52 +455,6 @@ def splicing_data(samples, events, true_modalities, modality_models, groupby):
                     for group, d in
                     df.groupby(groupby)], axis=0)
     return df.sort_index()
-
-
-# @pytest.fixture(scope='module')
-# def splicing_data_fixed(samples, events, true_modalities_fixed,
-#                         modality_models,
-#                         groupby_fixed):
-#     df = pd.DataFrame(index=samples, columns=events)
-#
-#     def dataframe_maker(group, true_modalities, modality_models, df):
-#         data = np.vstack([modality_models[modality].rvs(df.shape[0])
-#                           for modality in true_modalities.ix[group]]).T
-#         return pd.DataFrame(data, index=df.index, columns=df.columns)
-#
-#     df = pd.concat([dataframe_maker(group, true_modalities_fixed,
-#                                     modality_models, df)
-#                     for group, df in df.groupby(groupby_fixed)], axis=0)
-#     df = df.apply(lambda x: x.map(
-#         lambda i: i if np.random.uniform() > np.random.uniform()
-#         else np.nan), axis=1)
-#
-#     def randomly_add_na(x):
-#         if np.random.uniform() > np.random.uniform(0, .1):
-#             return x
-#         else:
-#             return pd.Series(np.nan, index=x.index)
-#
-#     df = pd.concat([d.apply(randomly_add_na, axis=1)
-#                     for group, d in
-#                     df.groupby(groupby_fixed)], axis=0)
-#     return df.sort_index()
-
-#
-# @pytest.fixture(scope='module')
-# def splicing_data_no_na(samples, events,
-#                         true_modalities, modality_models, groupby):
-#     df = pd.DataFrame(index=samples, columns=events)
-#
-#     def dataframe_maker(group, true_modalities, modality_models, df):
-#         data = np.vstack([modality_models[modality].rvs(df.shape[0])
-#                           for modality in true_modalities.ix[group]]).T
-#         return pd.DataFrame(data, index=df.index, columns=df.columns)
-#
-#     df = pd.concat([dataframe_maker(group, true_modalities,
-#                                     modality_models, df)
-#                     for group, df in df.groupby(groupby)], axis=0)
-#     return df.sort_index()
 
 
 @pytest.fixture(scope='module')
@@ -549,30 +496,6 @@ def genelist_link(request, genelist_path, genelist_dropbox_link):
         return genelist_path
     elif request.param == 'dropbox':
         return genelist_dropbox_link
-
-
-# @pytest.fixture(params=[None, 'gene_category: A',
-# 'link',
-# 'path'], scope='module')
-# def feature_subset(request, genelist_dropbox_link, genelist_path):
-# from flotilla.util import link_to_list
-#
-# name_to_location = {'link': genelist_dropbox_link,
-# 'path': genelist_path}
-#
-# if request.param is None:
-#         return request.param
-#     elif request.param in ('link', 'path'):
-#
-#         try:
-#             return link_to_list(name_to_location[request.param])
-#         except subprocess.CalledProcessError:
-#             # Downloading the dropbox link failed, aka not connected to the
-#             # internet, so just test "None" again
-#             return None
-#     else:
-#         # Otherwise, this is a name of a subset
-#         return request.param
 
 
 @pytest.fixture(scope='module')
