@@ -653,7 +653,8 @@ class BaseData(object):
 
     def _subset_singles_and_pooled(self, sample_ids=None,
                                    feature_ids=None, data=None,
-                                   require_min_samples=True):
+                                   require_min_samples=True,
+                                   get_pooled=True):
         """Subset singles and pooled, taking only features that appear in both
 
         Parameters
@@ -672,6 +673,9 @@ class BaseData(object):
         require_min_samples : bool
             If True, then require the study-default minimum number of samples,
             but only for singles.
+        get_pooled : bool
+            If True, assume you also want pooled samples even if the sample IDs
+            don't overlap.
 
         Returns
         -------
@@ -692,34 +696,36 @@ class BaseData(object):
             sample_ids = data.index.intersection(self.singles.index)
             singles = self._subset(data, sample_ids,
                                    require_min_samples=require_min_samples)
+        if get_pooled:
+            try:
+                # If the sample ids don't overlap with the pooled sample, assume
+                # you want all the pooled samples
+                n_pooled_sample_ids = sum(self.pooled.index.isin(sample_ids))
 
-        try:
-            # If the sample ids don't overlap with the pooled sample, assume
-            # you want all the pooled samples
-            n_pooled_sample_ids = sum(self.pooled.index.isin(sample_ids))
+                if sample_ids is not None and n_pooled_sample_ids > 0:
+                    pooled_sample_ids = sample_ids
+                else:
+                    pooled_sample_ids = None
 
-            if sample_ids is not None and n_pooled_sample_ids > 0:
-                pooled_sample_ids = sample_ids
-            else:
-                pooled_sample_ids = None
+                if data is None:
+                    pooled = self._subset(self.pooled, pooled_sample_ids,
+                                          feature_ids,
+                                          require_min_samples=False)
+                else:
+                    sample_ids = data.index.intersection(self.pooled.index)
+                    pooled = self._subset(data, sample_ids,
+                                          require_min_samples=False)
 
-            if data is None:
-                pooled = self._subset(self.pooled, pooled_sample_ids,
-                                      feature_ids,
-                                      require_min_samples=False)
-            else:
-                sample_ids = data.index.intersection(self.pooled.index)
-                pooled = self._subset(data, sample_ids,
-                                      require_min_samples=False)
-
-            if feature_ids is None or len(feature_ids) > 1:
-                # These are DataFrames
-                singles, pooled = singles.align(pooled, axis=1, join='inner')
-            else:
-                # These are Seriessssss
-                singles = singles.dropna()
-                pooled = pooled.dropna()
-        except (AttributeError, ValueError):
+                if feature_ids is None or len(feature_ids) > 1:
+                    # These are DataFrames
+                    singles, pooled = singles.align(pooled, axis=1, join='inner')
+                else:
+                    # These are Seriessssss
+                    singles = singles.dropna()
+                    pooled = pooled.dropna()
+            except (AttributeError, ValueError):
+                pooled = None
+        else:
             pooled = None
 
         return singles, pooled
@@ -993,13 +999,13 @@ class BaseData(object):
 
     def _violinplot(self, feature_id, sample_ids=None,
                     phenotype_groupby=None,
-                    phenotype_order=None, ax=None, color=None, **kwargs):
+                    phenotype_order=None, ax=None, color=None,
+                    get_pooled=True, **kwargs):
         """For compatiblity across data types, can specify _violinplot
         """
         sample_ids = self.data.index if sample_ids is None else sample_ids
-        singles, pooled = self._subset_singles_and_pooled(sample_ids,
-                                                          feature_ids=[
-                                                              feature_id])
+        singles, pooled = self._subset_singles_and_pooled(
+            sample_ids, feature_ids=[feature_id], get_pooled=get_pooled)
         outliers = None
         try:
             outliers_in_data = self.outliers.index.intersection(sample_ids)

@@ -7,7 +7,7 @@ import seaborn as sns
 def violinplot(singles, groupby, color_ordered=None, ax=None,
                pooled=None, ylabel='', bw=None,
                order=None, title=None, ylim=None, yticks=None,
-               outliers=None, **kwargs):
+               outliers=None, stripplot=True, **kwargs):
     """
     Parameters
     ----------
@@ -36,6 +36,9 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
         Where to position yticks
     outliers : pandas.Series
         Gene expression or splicing values from outlier cells
+    stripplot : bool
+        If True (default), plot individual values of cells as well as
+        violinplot for the full trend
 
     Returns
     -------
@@ -78,16 +81,17 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
                        bw=bw, order=order, inner=None, cut=0,
                        linewidth=1, scale='width', palette=color_ordered,
                        ax=ax, **kwargs)
-    if outliers is not None and not outliers.dropna().empty:
-        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_outliers,
-                      jitter=True, order=order, ax=ax, color='grey')
-    if not singles.dropna().empty:
-        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_singles,
-                      jitter=True, order=order, ax=ax, palette=color_ordered)
-    if pooled is not None and not pooled.dropna().empty:
-        sns.stripplot(x=groupby.name, y=ylabel, data=tidy_pooled,
-                      jitter=True, order=order, ax=ax, color='#262626',
-                      zorder=100, size=10)
+    if stripplot:
+        if outliers is not None and not outliers.dropna().empty:
+            sns.stripplot(x=groupby.name, y=ylabel, data=tidy_outliers,
+                          jitter=True, order=order, ax=ax, color='grey')
+        if not singles.dropna().empty:
+            sns.stripplot(x=groupby.name, y=ylabel, data=tidy_singles,
+                          jitter=True, order=order, ax=ax, palette=color_ordered)
+        if pooled is not None and not pooled.dropna().empty:
+            sns.stripplot(x=groupby.name, y=ylabel, data=tidy_pooled,
+                          jitter=True, order=order, ax=ax, color='#262626',
+                          zorder=100, size=10)
     sizes = tidy_singles.groupby(groupby.name).size()
     if order is None:
         order = sizes.keys()
