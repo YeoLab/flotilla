@@ -100,13 +100,14 @@ installation instructions.
 To make sure you have the latest packages, on the command line in your 
 terminal, enter this command:
 
-    conda update --yes pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
+    conda install --yes --file conda_requirements.txt
+    conda install --yes pip
 
 Not all packages are available using `conda`, so we'll install the rest using
 `pip`, which is a Python package installer and installs from 
 [PyPI](https://pypi.python.org/), the Python Package Index.
 
-    pip install seaborn fastcluster brewer2mpl pymongo gspread husl semantic_version joblib
+    pip install -r requirements.txt
     
 Next, to install the latest release of `flotilla`, do
 
