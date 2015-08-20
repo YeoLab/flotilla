@@ -80,7 +80,7 @@ pre-installed.
 We recommend creating a "sandbox" where you can install any and all packages
 without disturbing the rest of the Python distribution. You can do this with
 
-    conda create --yes flotilla_env pip numpy scipy cython matplotlib nose six scikit-learn ipython networkx pandas tornado statsmodels setuptools pytest pyzmq jinja2 pyyaml
+    conda create --yes flotilla_env --file conda_requirements.txt
 
 You've now just created a "virtual environment" called `flotilla_env` (the first
 argument). Now activate that environment with,
@@ -101,7 +101,6 @@ To make sure you have the latest packages, on the command line in your
 terminal, enter this command:
 
     conda install --yes --file conda_requirements.txt
-    conda install --yes pip
 
 Not all packages are available using `conda`, so we'll install the rest using
 `pip`, which is a Python package installer and installs from 
