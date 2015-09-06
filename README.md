@@ -80,7 +80,7 @@ pre-installed.
 We recommend creating a "sandbox" where you can install any and all packages
 without disturbing the rest of the Python distribution. You can do this with
 
-    conda create --yes flotilla_env --file conda_requirements.txt
+    conda create --yes --name flotilla_env --file conda_requirements.txt
 
 You've now just created a "virtual environment" called `flotilla_env` (the first
 argument). Now activate that environment with,
