@@ -533,7 +533,14 @@ class SplicingData(BaseData):
             metric=metric, method=method, scale_fig_by_data=scale_fig_by_data,
             norm_features=False, **kwargs)
 
-    def _expression_ids(self, feature_ids):
+    def splicing_to_expression_id(self, feature_ids):
         """Get the gene ids corresponding to the splicing ids provided"""
         return list(chain(*self.feature_data[self.feature_expression_id_col][
-            feature_ids].str.split(',').values))
+            feature_ids].str.split(',').dropna().values))
+
+    def expression_to_splicing_id(self, expression_ids):
+        ind = self.feature_data.ensembl_id.map(
+            lambda x: expression_ids.isin(
+                x.split(',')).any() if isinstance(x, str) else False)
+
+        return self.feature_data.index[ind]
