@@ -8,7 +8,7 @@ MACHINE_EPSILON = np.finfo(float).eps
 def plot_go_enrichment(x_col='bonferonni_corrected_p_value', data=None,
                        ax=None, max_categories=10,
                        **kwargs):
-    data = data.sort(subset=[x_col], ascending=True)
+    data = data.sort(x_col, ascending=True)
     data[x_col] = data[x_col].replace(0, np.nan)
     vmin = max(data[x_col].dropna().min(), MACHINE_EPSILON)
     if np.isnan(vmin):
