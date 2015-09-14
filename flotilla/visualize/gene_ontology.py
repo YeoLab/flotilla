@@ -12,7 +12,7 @@ def plot_go_enrichment(x_col='bonferonni_corrected_p_value', data=None,
     data[x_col] = data[x_col].replace(0, np.nan)
     vmin = max(data[x_col].dropna().min(), MACHINE_EPSILON)
     if np.isnan(vmin):
-        vmin = 1e-25
+        vmin = MACHINE_EPSILON
     data.loc[:, x_col] = data[x_col].fillna(vmin * .9)
     if data.shape[0] > max_categories:
         data = data.iloc[:max_categories, :]
