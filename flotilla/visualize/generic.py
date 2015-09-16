@@ -147,3 +147,64 @@ def simple_twoway_scatter(sample1, sample2, **kwargs):
     ymin = max(ymin, sample2.min() - .1)
     jointgrid.ax_joint.set_xlim(xmin, xmax)
     jointgrid.ax_joint.set_ylim(ymin, ymax)
+
+def cdf(data, nbins=100):
+    """Calculate the cumulative distribution of a dataset
+
+    Like `numpy.histogram` except it takes the cumulative
+
+    Parameters
+    ----------
+    var1 : array_like
+        Array_like means all those objects -- lists, nested lists, etc. --
+        that can be converted to an array.  We can also refer to
+        variables like `var1`.
+    var2 : int
+        The type above can either refer to an actual Python type
+        (e.g. ``int``), or describe the type of the variable in more
+        detail, e.g. ``(N,) ndarray`` or ``array_like``.
+    Long_variable_name : {'hi', 'ho'}, optional
+        Choices in brackets, default first when optional.
+
+    Returns
+    -------
+    type
+        Explanation of anonymous return value of type ``type``.
+    describe : type
+        Explanation of return value named `describe`.
+    out : type
+        Explanation of `out`.
+
+    Examples
+    --------
+    These are written in doctest format, and should illustrate how to
+    use the function.
+
+    >>> a=[1,2,3]
+    >>> print [x + 3 for x in a]
+    [4, 5, 6]
+    >>> print "a\n\nb"
+    a
+    b
+    """
+    vmin = data.min()
+    vmax = data.max()
+    bins = np.linspace(vmin, vmax, nbins+1)
+    hist, bin_edges = np.histogram(data, bins=nbins)
+    normed_hist = hist/float(hist.sum())
+#     print normed_hist.max(), normed_hist.sum()
+    return bin_edges, np.cumsum(normed_hist)
+
+def cdfplot(data, nbins=100, ax=None, log=False, **kwargs):
+    if ax is None:
+        ax = plt.gca()
+
+    bin_edges, cumulative = cdf(pd.Series(data), nbins=nbins)
+
+#     if log:
+#         bin_edges = np.log10(bin_edges)
+#         ax.set_xlabel('log10')
+    if log:
+        return ax.semilogx(bin_edges[1:], cumulative, basex=10, **kwargs)
+    else:
+        return ax.plot(bin_edges[1:], cumulative, **kwargs)
