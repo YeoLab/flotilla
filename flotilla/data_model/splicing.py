@@ -23,8 +23,8 @@ class SplicingData(BaseData):
     n_components = 2
     _binsize = 0.1
 
-    included_label = '$\Psi~1$ >>'
-    excluded_label = '$\Psi~0$ >>'
+    included_label = '~1'
+    excluded_label = '~0'
 
     def __init__(self, data,
                  feature_data=None, binsize=0.1, outliers=None,
