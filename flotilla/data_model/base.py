@@ -1174,6 +1174,7 @@ class BaseData(object):
         data = data.dropna(how='all', axis=1).dropna(how='all', axis=0)
         mask = data.isnull()
 
+        data = data.fillna(data.mean())
         if norm_features:
             # Try to get close to 0 center, unit variance for each feature
             x = data
@@ -1181,7 +1182,6 @@ class BaseData(object):
             z = whiten(x.apply(lambda y: np.log2(y / y.mean(axis=0)), 0))
             data = pd.DataFrame(z, index=data.index, columns=data.columns)
 
-        data = data.fillna(data.mean())
         if sample_id_to_color is not None:
             sample_colors = [sample_id_to_color[i] for i in data.index]
 
