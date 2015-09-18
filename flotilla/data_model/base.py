@@ -19,7 +19,6 @@ from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, simple_twoway_scatter
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
-from ..util import memoize, cached_property
 from ..compute.outlier import OutlierDetection
 
 MINIMUM_FEATURE_SUBSET = 20
@@ -698,8 +697,8 @@ class BaseData(object):
                                    require_min_samples=require_min_samples)
         if get_pooled:
             try:
-                # If the sample ids don't overlap with the pooled sample, assume
-                # you want all the pooled samples
+                # If the sample ids don't overlap with the pooled sample,
+                # assume you want all the pooled samples
                 n_pooled_sample_ids = sum(self.pooled.index.isin(sample_ids))
 
                 if sample_ids is not None and n_pooled_sample_ids > 0:
@@ -718,7 +717,8 @@ class BaseData(object):
 
                 if feature_ids is None or len(feature_ids) > 1:
                     # These are DataFrames
-                    singles, pooled = singles.align(pooled, axis=1, join='inner')
+                    singles, pooled = singles.align(pooled, axis=1,
+                                                    join='inner')
                 else:
                     # These are Seriessssss
                     singles = singles.dropna()

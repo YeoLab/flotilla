@@ -271,6 +271,7 @@ def load_csv(file_name, **kwargs):
 def write_csv(df, file_name):
     df.to_csv(file_name)
 
+
 def load_hdf(file_name, key, **kwargs):
     return pd.read_hdf(file_name, key, **kwargs)
 

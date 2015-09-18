@@ -2,9 +2,7 @@
 Calculate splicing-specific operations
 """
 
-
 import numpy as np
-
 
 
 def switchy_score(array):

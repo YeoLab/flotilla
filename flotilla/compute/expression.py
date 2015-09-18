@@ -190,8 +190,9 @@ class TwoWayGeneComparisonLocal(object):
                          .format(len(self.expressed_genes),
                                  *self.sample_names))
 
+
 def differential_expression(data, groupby):
-    """Calculate probability that a feature's values are skewed towards one or more groups
+    """Calculate probability that a feature's values are skewed towards a group
 
     Uses a Mann-Whitney U test when the number of groups is equal to 2, and
     a Kruskal-Wallis test when the number of groups is greater than 2. If
@@ -224,8 +225,9 @@ def differential_expression(data, groupby):
         raise ValueError('Must have at least two groups to calculate '
                          'differential expression')
     de_results = dict((col,
-        pd.Series(statistical_test(*[s for diagnosis, s in series.groupby(groupby)]),
-                  index=['U_statistic', 'p_value']))
+        pd.Series(statistical_test(*[s for diagnosis, s
+                                     in series.groupby(groupby)]),
+            index=['U_statistic', 'p_value']))
      for col, series in data.iteritems())
     de_results = pd.DataFrame.from_records(de_results).T
     de_results['bonferonni_p_value'] = de_results.p_value*de_results.shape[0]
