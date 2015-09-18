@@ -224,11 +224,11 @@ def differential_expression(data, groupby):
     else:
         raise ValueError('Must have at least two groups to calculate '
                          'differential expression')
-    de_results = dict((col,
-        pd.Series(statistical_test(*[s for diagnosis, s
-                                     in series.groupby(groupby)]),
+    de_results = dict(
+        (col, pd.Series(statistical_test(
+            *[s for group, s in series.groupby(groupby)]),
             index=['U_statistic', 'p_value']))
-     for col, series in data.iteritems())
+        for col, series in data.iteritems())
     de_results = pd.DataFrame.from_records(de_results).T
     de_results['bonferonni_p_value'] = de_results.p_value*de_results.shape[0]
     de_results = de_results.sort('bonferonni_p_value')

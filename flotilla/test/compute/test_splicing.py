@@ -1,5 +1,3 @@
-from collections import Iterable
-
 import pytest
 import numpy as np
 import numpy.testing as npt
