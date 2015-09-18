@@ -9,9 +9,7 @@ import warnings
 from ipywidgets import interact, Text, Button
 import matplotlib.pyplot as plt
 
-from ..visualize.color import red
 from .network import NetworkerViz
-from .color import str_to_color
 from ..util import natural_sort, link_to_list
 
 
@@ -517,7 +515,7 @@ class Interactive(object):
                                       format=extension.lstrip('.'))
 
         savefile = Text(description='savefile',
-                              value='figures/clustermap.pdf')
+                        value='figures/clustermap.pdf')
         save_widget = Button(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]
@@ -578,7 +576,7 @@ class Interactive(object):
                                       format=extension.lstrip('.'))
 
         savefile = Text(description='savefile',
-                              value='figures/correlations.pdf')
+                        value='figures/correlations.pdf')
         save_widget = Button(description='save')
         gui.widget.children = list(gui.widget.children) + [savefile,
                                                            save_widget]

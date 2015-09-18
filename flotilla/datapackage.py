@@ -121,7 +121,6 @@ def write_small_or_big_data(data, resource_name, datapackage_dir,
     return info
 
 
-
 def make_study_datapackage(study_name, metadata,
                            expression_data=None,
                            splicing_data=None,
