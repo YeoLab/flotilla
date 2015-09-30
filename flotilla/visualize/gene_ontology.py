@@ -11,9 +11,7 @@ def plot_go_enrichment(x_col='bonferonni_corrected_p_value', data=None,
                        **kwargs):
     data = data.sort(x_col, ascending=True)
     data[x_col] = data[x_col].replace(0, np.nan)
-    vmin = max(data[x_col].dropna().min(), MACHINE_EPSILON)
-    if np.isnan(vmin):
-        vmin = MACHINE_EPSILON
+    vmin = min(MACHINE_EPSILON, data[x_col].min())
     data.loc[:, x_col] = data[x_col].fillna(vmin * .9)
     if data.shape[0] > max_categories:
         data = data.iloc[:max_categories, :]
