@@ -215,7 +215,7 @@ class SplicingData(BaseData):
             pooled = pd.DataFrame([pooled.values], columns=pooled.index,
                                   index=[pooled.name])
         pooled = pooled.dropna(how='all', axis=1)
-        not_measured_in_pooled = singles.columns.diff(pooled.columns)
+        not_measured_in_pooled = singles.columns.difference(pooled.columns)
         singles, pooled = singles.align(pooled, axis=1, join='inner')
         # import pdb; pdb.set_trace()
 
