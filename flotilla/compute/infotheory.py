@@ -113,7 +113,7 @@ def kld(p, q):
 
 
 def jsd(p, q):
-    """Finds the per-column JSD betwen dataframes p and q
+    """Finds the per-column JSD between dataframes p and q
 
     Jensen-Shannon divergence of two probability distrubutions pandas
     dataframes, p and q. These distributions are usually created by running
