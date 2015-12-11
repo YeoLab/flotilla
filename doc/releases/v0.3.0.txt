@@ -10,6 +10,10 @@ Bug fixes
 - ``Study.tidy_splicing_with_expression`` now deals with when splicing events
   map to multiple gene names. Fixes #304 with #309.
 - Update violinplots to be compatible with ``seaborn`` version 0.6
+- Fix masking for ``plot_correlations`` and ``plot_clustermap``
+- Fix naming bugs in modality calculations
+- Fix ``BaseData.plot_clustermap`` plotting when a threshold is applied and
+  introduces NAs. #322
 
 Miscellaneous
 ~~~~~~~~~~~~~
@@ -23,5 +27,3 @@ Miscellaneous
 - Remove all "big NMF space" calculations - the user should do them by hand
 - Don't plot NMF space with violinplots - make it separate
 - Move ``study.py`` from ``flotilla.data_model`` into ``flotilla`` since it's really a controller, not part of the datamodel
-- Fix masking for ``plot_correlations`` and ``plot_clustermap``
-- Fix naming bugs in modality calculations

@@ -1,12 +1,6 @@
-from collections import Iterable
-
 import pytest
 import numpy as np
 import numpy.testing as npt
-import pandas as pd
-import pandas.util.testing as pdt
-from scipy import stats
-from scipy.misc import logsumexp
 
 
 @pytest.fixture(params=['list', 'array', 'nan'])

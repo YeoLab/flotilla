@@ -124,18 +124,20 @@ Test dataset
 
 We have prepared a slice of the full dataset for testing and demonstration purposes.
 
-Run each of the following code lines in its own ipython notebook cell for an interactive feature.
+Run each of the following code lines in its own IPython notebook cell for an interactive feature.
 
-    import flotilla
-    study = flotilla.embark(flotilla._shalek2013)
+```python
+import flotilla
+study = flotilla.embark(flotilla._shalek2013)
 
-    study.interactive_pca()
+study.interactive_pca()
 
-    study.interactive_graph()
+study.interactive_graph()
 
-    study.interactive_classifier()
+study.interactive_classifier()
 
-    study.interactive_lavalamp_pooled_inconsistent()
+study.interactive_lavalamp_pooled_inconsistent()
+```
 
 IMPORTANT NOTE: for this test,several failures are expected since the test set is small.
 Adjust parameters to explore valid parameter spaces.

@@ -87,7 +87,8 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
                           jitter=True, order=order, ax=ax, color='grey')
         if not singles.dropna().empty:
             sns.stripplot(x=groupby.name, y=ylabel, data=tidy_singles,
-                          jitter=True, order=order, ax=ax, palette=color_ordered)
+                          jitter=True, order=order, ax=ax,
+                          palette=color_ordered)
         if pooled is not None and not pooled.dropna().empty:
             sns.stripplot(x=groupby.name, y=ylabel, data=tidy_pooled,
                           jitter=True, order=order, ax=ax, color='#262626',
@@ -148,6 +149,7 @@ def simple_twoway_scatter(sample1, sample2, **kwargs):
     jointgrid.ax_joint.set_xlim(xmin, xmax)
     jointgrid.ax_joint.set_ylim(ymin, ymax)
 
+
 def cdf(data, nbins=100):
     """Calculate the cumulative distribution of a dataset
 
@@ -187,13 +189,11 @@ def cdf(data, nbins=100):
     a
     b
     """
-    vmin = data.min()
-    vmax = data.max()
-    bins = np.linspace(vmin, vmax, nbins+1)
     hist, bin_edges = np.histogram(data, bins=nbins)
     normed_hist = hist/float(hist.sum())
 #     print normed_hist.max(), normed_hist.sum()
     return bin_edges, np.cumsum(normed_hist)
+
 
 def cdfplot(data, nbins=100, ax=None, log=False, **kwargs):
     if ax is None:
