@@ -1205,7 +1205,8 @@ class BaseData(object):
 
     def plot_correlations(self, sample_ids=None, feature_ids=None, data=None,
                           featurewise=False, sample_id_to_color=None,
-                          metric='euclidean', method='average',
+                          corr_method='pearson',
+                          metric='cityblock', method='average',
                           scale_fig_by_data=True, **kwargs):
         if data is None:
             data = self._subset(self.data, sample_ids, feature_ids,
@@ -1218,7 +1219,7 @@ class BaseData(object):
 
         if not featurewise:
             data = data.T
-        corr = data.corr()
+        corr = data.corr(method=corr_method)
         corr = corr.dropna(how='all', axis=0).dropna(how='all', axis=1)
 
         # Get a mask of what values are NA, then replace them because

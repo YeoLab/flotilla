@@ -44,7 +44,12 @@ class ExpressionData(BaseData):
         self.log_base = log_base
 
         if self.log_base is not None:
-            self.data = np.divide(np.log(self.data), np.log(self.log_base))
+            self.thresh = np.divide(np.log(self.thresh), np.log(self.log_base))
+            # data = np.self.data_original
+            if not self.singles.empty:
+                self.data = self._threshold(self.data, self.singles)
+            else:
+                self.data = self._threshold(self.data)
 
         self.feature_data = feature_data
 

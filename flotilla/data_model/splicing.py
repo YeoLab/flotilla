@@ -526,7 +526,9 @@ class SplicingData(BaseData):
                         feature_colors=None, sample_id_to_color=None,
                         metric='euclidean', method='average',
                         scale_fig_by_data=True, **kwargs):
-        super(SplicingData, self).plot_clustermap(
+        kwargs.setdefault('cmap', 'RdYlBu_r')
+        kwargs.setdefault('center', 0)
+        return super(SplicingData, self).plot_clustermap(
             sample_ids=sample_ids, feature_ids=feature_ids, data=data,
             feature_colors=feature_colors,
             sample_id_to_color=sample_id_to_color,
