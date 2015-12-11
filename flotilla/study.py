@@ -1375,11 +1375,11 @@ class Study(object):
         ------
         """
         if data_type == 'expression':
-            self.expression.plot_two_features(
+            return self.expression.plot_two_features(
                 feature1, feature2, groupby=self.sample_id_to_phenotype,
                 label_to_color=self.phenotype_to_color, **kwargs)
         if data_type == 'splicing':
-            self.splicing.plot_two_features(
+            return self.splicing.plot_two_features(
                 feature1, feature2, groupby=self.sample_id_to_phenotype,
                 label_to_color=self.phenotype_to_color, **kwargs)
 
