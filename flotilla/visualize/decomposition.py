@@ -519,7 +519,7 @@ class DecompositionViz(object):
             index=self.feature_renamer)
 
         # Plot explained variance
-        ymax = self.explained_variance_ratio_[:n_components]
+        ymax = self.explained_variance_ratio_[:n_components].values
         ymin = np.zeros(ymax.shape)
         x = np.arange(ymax.shape[0])
         self.ax_explained_variance.plot(ymax, 'o-', color='#262626')
