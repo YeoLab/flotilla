@@ -84,15 +84,15 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
     if stripplot:
         if outliers is not None and not outliers.dropna().empty:
             sns.stripplot(x=groupby.name, y=ylabel, data=tidy_outliers,
-                          edgecolor='gray',
+                          edgecolor='gray', linewidth=1,
                           jitter=True, order=order, ax=ax, color='grey')
         if not singles.dropna().empty:
             sns.stripplot(x=groupby.name, y=ylabel, data=tidy_singles,
                           jitter=True, order=order, ax=ax, edgecolor='gray',
-                          palette=color_ordered)
+                          linewidth=1, palette=color_ordered)
         if pooled is not None and not pooled.dropna().empty:
             sns.stripplot(x=groupby.name, y=ylabel, data=tidy_pooled,
-                          edgecolor='gray',
+                          edgecolor='gray', linewidth=1,
                           jitter=True, order=order, ax=ax, color='#262626',
                           zorder=100, size=10)
     sizes = tidy_singles.groupby(groupby.name).size()
