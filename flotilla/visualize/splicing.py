@@ -15,8 +15,8 @@ seaborn_colors = map(mpl.colors.rgb2hex, sns.color_palette('deep'))
 
 
 def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
-             switchy_score_psi=None, marker='o', plot_kws=None,
-             yticks=None):
+             switchy_score_psi=None, marker='o', 
+             yticks=None, **kwargs):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
@@ -40,8 +40,8 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
         psi provided, but sometimes you want to plot multiple psi scores on
         the same plot, with the same events.
     marker : str
-        A valid matplotlib marker. Default is 'd' (thin diamond)
-    plot_kws : dict
+        A valid matplotlib marker. Default is 'o' (circle)
+    kwargs : dict
         Keyword arguments to supply to plot()
 
     Returns
@@ -56,15 +56,14 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
         fig, ax = plt.subplots(figsize=(16, 4))
 
     color = seaborn_colors[0] if color is None else color
-    plot_kws = {} if plot_kws is None else plot_kws
-    plot_kws.setdefault('color', color)
-    plot_kws.setdefault('alpha', 0.2)
-    plot_kws.setdefault('markersize', 10)
-    plot_kws.setdefault('marker', marker)
-    plot_kws.setdefault('linestyle', 'None')
-    plot_kws.setdefault('markeredgecolor', '#262626')
-    plot_kws.setdefault('markeredgewidth', .1)
-    plot_kws.setdefault('rasterized', True)
+    kwargs.setdefault('color', color)
+    kwargs.setdefault('alpha', 0.2)
+    kwargs.setdefault('markersize', 10)
+    kwargs.setdefault('marker', marker)
+    kwargs.setdefault('linestyle', 'None')
+    kwargs.setdefault('markeredgecolor', '#262626')
+    kwargs.setdefault('markeredgewidth', .1)
+    kwargs.setdefault('rasterized', True)
 
     y = as_numpy(psi.dropna(how='all', axis=1))
 
@@ -85,7 +84,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     # Add one so the last value is actually included instead of cut off
     xmax = x.max() + 1
 
-    ax.plot(x, y, **plot_kws)
+    ax.plot(x, y, **kwargs)
     sns.despine()
     ax.set_ylabel('$\Psi$')
     ax.set_xlabel('{} splicing events'.format(n_events))
@@ -133,7 +132,7 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
     plot_order.sort()
 
     color = seaborn_colors[0] if color is None else color
-    pooled_plot_kws = {'alpha': 0.5, 'markeredgecolor': 'k',
+    pooled_kwargs = {'alpha': 0.5, 'markeredgecolor': 'k',
                        'markerfacecolor': 'none', 'markeredgewidth': 1}
 
     pooled = pooled.dropna(axis=1, how='all')
@@ -149,7 +148,7 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
         lavalamp(pooled.ix[:, pooled_inconsistent.columns], marker='o',
                  color='k',
                  switchy_score_psi=singles_values,
-                 ax=ax_inconsistent, plot_kws=pooled_plot_kws)
+                 ax=ax_inconsistent, kwargs=pooled_kwargs)
         title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
             percent, suffix)
         ax_inconsistent.set_title('Pooled splicing events inconsistent '
@@ -164,7 +163,7 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
     lavalamp(singles.ix[:, consistent_events], color=color, ax=ax_consistent)
     lavalamp(pooled.ix[:, consistent_events], color='k', marker='o',
              switchy_score_psi=singles.ix[:, consistent_events],
-             ax=ax_consistent, plot_kws=pooled_plot_kws)
+             ax=ax_consistent, kwargs=pooled_kwargs)
     title_suffix = '' if percent is None else ' ({:.1f}%){}'.format(
         100 - percent, suffix)
     ax_consistent.set_title('Pooled splicing events consistent with singles{}'
