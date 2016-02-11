@@ -14,9 +14,10 @@ from ..util import as_numpy
 seaborn_colors = map(mpl.colors.rgb2hex, sns.color_palette('deep'))
 
 
-def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
-             switchy_score_psi=None, marker='o', 
-             yticks=None, **kwargs):
+def lavalamp(psi, yticks=(0, 0.5, 1), x_offset=0, title='', ax=None,
+             switchy_score_psi=None, marker='o', markersize=10,
+             markeredgewidth=0.1, markeredgecolor='#262626',
+             rasterized=True, alpha=0.2, **kwargs):
     """Make a 'lavalamp' scatter plot of many splicing events
 
     Useful for visualizing many splicing events at once.
@@ -24,13 +25,14 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     Parameters
     ----------
     psi : array
-        A (n_events, n_samples) matrix either as a numpy array or as a pandas
+        A (n_samples, n_events) matrix either as a numpy array or as a pandas
         DataFrame
-    color : matplotlib color
-        Color of the scatterplot. Defaults to a dark teal
-    x_offset : numeric or None
-        How much to offset the x-values off of 1. Useful for plotting several
-        celltypes at once.
+    yticks : array
+        Which yticks to display
+    x_offset : numeric
+        How much to offset the x-values off of 0 (fractions are best).
+        Useful if you are plotting several celltypes with separate calls to
+        lavalamp()
     title : str
         Title of the plot. Default ''
     ax : matplotlib.Axes object
@@ -40,7 +42,18 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
         psi provided, but sometimes you want to plot multiple psi scores on
         the same plot, with the same events.
     marker : str
-        A valid matplotlib marker. Default is 'o' (circle)
+        A valid matplotlib plotting symbol marker. Default is 'o' (circle)
+    markersize : int
+        How big the plotting symbol should be
+    markeredgewidth : float
+        Linewidth of the marker outline
+    markeredgecolor : matplotlib color
+        Color of the marker outline
+    rasterized : bool
+        If True, save the scatterplot as a pixel-based (rather than
+        vector-based) plot to save space. True by default.
+    alpha : float
+        How transparent to plot the markers (1 is opaque)
     kwargs : dict
         Keyword arguments to supply to plot()
 
@@ -53,17 +66,7 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
         return
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=(16, 4))
-
-    color = seaborn_colors[0] if color is None else color
-    kwargs.setdefault('color', color)
-    kwargs.setdefault('alpha', 0.2)
-    kwargs.setdefault('markersize', 10)
-    kwargs.setdefault('marker', marker)
-    kwargs.setdefault('linestyle', 'None')
-    kwargs.setdefault('markeredgecolor', '#262626')
-    kwargs.setdefault('markeredgewidth', .1)
-    kwargs.setdefault('rasterized', True)
+        ax = plt.gca()
 
     y = as_numpy(psi.dropna(how='all', axis=1))
 
@@ -76,15 +79,18 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
     y = y[:, order]
 
     n_samples, n_events = y.shape
-    # .astype(float) is to get rid of a deprecation warning
     x = np.vstack((np.arange(n_events) for _ in xrange(n_samples)))
+    # .astype(float) is to get rid of a deprecation warning
     x = x.astype(float)
     x += x_offset
 
     # Add one so the last value is actually included instead of cut off
     xmax = x.max() + 1
 
-    ax.plot(x, y, **kwargs)
+    ax.plot(x, y, alpha=alpha, rasterized=rasterized, markersize=markersize,
+            marker=marker, linestyle='None',
+            markeredgecolor=markeredgecolor, markeredgewidth=markeredgewidth,
+            **kwargs)
     sns.despine()
     ax.set_ylabel('$\Psi$')
     ax.set_xlabel('{} splicing events'.format(n_events))
@@ -92,11 +98,9 @@ def lavalamp(psi, color=None, x_offset=0, title='', ax=None,
 
     ax.set_xlim(-0.5, xmax + .5)
     ax.set_ylim(0, 1)
-    if yticks is None:
-        ax.set_yticks([0, 0.5, 1])
-    else:
-        ax.set_yticks(yticks)
+    ax.set_yticks(yticks)
     ax.set_title(title)
+    return ax
 
 
 def hist_single_vs_pooled_diff(diff_from_singles, diff_from_singles_scaled,
