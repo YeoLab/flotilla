@@ -50,6 +50,7 @@ class ExpressionData(BaseData):
                 self.data = self._threshold(self.data, self.singles)
             else:
                 self.data = self._threshold(self.data)
+            self.data = np.divide(np.log(self.data), np.log(self.log_base))
 
         self.feature_data = feature_data
 
