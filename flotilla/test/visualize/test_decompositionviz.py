@@ -163,7 +163,7 @@ def test_large_dataframe(pca_large_dataframe, kwargs):
 
         true_pc_loadings_labels[pc] = labels
         true_top_features.update(labels)
-    pdt.assert_array_equal(dv.top_features, true_top_features)
+    pdt.assert_numpy_array_equal(dv.top_features, true_top_features)
     pdt.assert_dict_equal(dv.pc_loadings_labels, true_pc_loadings_labels)
     pdt.assert_dict_equal(dv.pc_loadings, true_pc_loadings)
 
@@ -188,8 +188,8 @@ def test_order(pca, kwargs):
     color_ordered = [dv.label_to_color[x] for x in order]
 
     pdt.assert_series_equal(dv.groupby, groupby)
-    pdt.assert_array_equal(dv.order, order)
-    pdt.assert_array_equal(dv.color_ordered, color_ordered)
+    pdt.assert_numpy_array_equal(dv.order, order)
+    pdt.assert_numpy_array_equal(dv.color_ordered, color_ordered)
 
 
 def test_explained_variance_none(pca, kwargs):
