@@ -509,7 +509,7 @@ class DecompositionViz(object):
         n_components : int, optional
             Number of components to plot
         """
-        half = n_features/2
+        half = int(n_features/2)
         components = self.components_.T
         components = components.sort(columns='pc_1', ascending=False)
         components_subset = pd.concat(
