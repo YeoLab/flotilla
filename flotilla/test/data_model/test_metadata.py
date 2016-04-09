@@ -102,24 +102,24 @@ class TestMetaData(object):
         pdt.assert_frame_equal(test_metadata.data, self.metadata)
         pdt.assert_series_equal(test_metadata.sample_id_to_phenotype,
                                 true_sample_id_to_phenotype)
-        pdt.assert_array_equal(test_metadata.unique_phenotypes,
+        pdt.assert_numpy_array_equal(test_metadata.unique_phenotypes,
                                true_unique_phenotypes)
-        pdt.assert_array_equal(test_metadata.n_phenotypes,
+        pdt.assert_numpy_array_equal(test_metadata.n_phenotypes,
                                len(true_unique_phenotypes))
-        pdt.assert_array_equal(test_metadata._default_phenotype_order,
+        pdt.assert_numpy_array_equal(test_metadata._default_phenotype_order,
                                list(sorted(true_unique_phenotypes)))
-        pdt.assert_array_equal(test_metadata.phenotype_order,
+        pdt.assert_numpy_array_equal(test_metadata.phenotype_order,
                                true_phenotype_order)
-        pdt.assert_array_equal(test_metadata.phenotype_transitions,
+        pdt.assert_numpy_array_equal(test_metadata.phenotype_transitions,
                                true_phenotype_transitions)
-        pdt.assert_array_equal(test_metadata._colors, true_colors)
-        pdt.assert_array_equal(test_metadata._default_phenotype_to_color,
+        pdt.assert_numpy_array_equal(test_metadata._colors, true_colors)
+        pdt.assert_numpy_array_equal(test_metadata._default_phenotype_to_color,
                                true_default_phenotype_to_color)
         pdt.assert_dict_equal(test_metadata.phenotype_to_color,
                               true_phenotype_to_color)
         pdt.assert_dict_equal(test_metadata.phenotype_to_marker,
                               true_phenotype_to_marker)
-        pdt.assert_array_equal(test_metadata.phenotype_color_order,
+        pdt.assert_numpy_array_equal(test_metadata.phenotype_color_order,
                                true_phenotype_color_order)
         pdt.assert_dict_equal(test_metadata.sample_id_to_color,
                               true_sample_id_to_color)
@@ -139,11 +139,11 @@ class TestMetaData(object):
                                  phenotype_col='phenotype')
         test_metadata.phenotype_col = 'phenotype2'
 
-        pdt.assert_array_equal(test_metadata.unique_phenotypes,
+        pdt.assert_numpy_array_equal(test_metadata.unique_phenotypes,
                                metadata.phenotype2.unique())
         pdt.assert_contains_all(metadata.phenotype2.unique(),
                                 test_metadata.phenotype_to_color)
         pdt.assert_contains_all(metadata.phenotype2.unique(),
                                 test_metadata.phenotype_to_marker)
-        pdt.assert_array_equal(test_metadata.phenotype_order,
+        pdt.assert_numpy_array_equal(test_metadata.phenotype_order,
                                list(sorted(metadata.phenotype2.unique())))

@@ -54,7 +54,7 @@ class TestBaseData:
         pdt.assert_series_equal(base_data.feature_renamer_series,
                                 feature_renamer_series)
         pdt.assert_frame_equal(base_data.outliers, outliers_df)
-        pdt.assert_array_equal(base_data.outlier_samples, outlier_samples)
+        pdt.assert_numpy_array_equal(base_data.outlier_samples, outlier_samples)
         assert isinstance(base_data.predictor_config_manager,
                           PredictorConfigManager)
         assert isinstance(base_data.predictor_dataset_manager,
@@ -175,7 +175,7 @@ class TestBaseData:
         variant = expression_data.columns[var > var_cut]
 
         pdt.assert_equal(base_data._var_cut, var_cut)
-        pdt.assert_array_equal(base_data.variant, variant)
+        pdt.assert_numpy_array_equal(base_data.variant, variant)
 
     def test__subset(self, expression_data_no_na, sample_ids, feature_ids):
         from flotilla.data_model.base import BaseData
@@ -298,7 +298,7 @@ class TestBaseData:
                         "{}".format(feature_subset, self))
         else:
             true_feature_ids = expression.data.columns
-        pdt.assert_array_equal(test_feature_ids, true_feature_ids)
+        pdt.assert_numpy_array_equal(test_feature_ids, true_feature_ids)
 
 
 def test_subsets_from_metadata(expression_feature_data):

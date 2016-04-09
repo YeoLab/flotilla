@@ -26,7 +26,7 @@ class TestGeneOntologyData(object):
             true_ontology[go]['n_genes'] = len(true_ontology[go]['genes'])
 
         pdt.assert_frame_equal(true_data, gene_ontology.data)
-        pdt.assert_array_equal(sorted(true_all_genes),
+        pdt.assert_numpy_array_equal(sorted(true_all_genes),
                                sorted(gene_ontology.all_genes))
 
         pdt.assert_contains_all(true_ontology.keys(), gene_ontology.ontology)
@@ -36,7 +36,7 @@ class TestGeneOntologyData(object):
             test_attributes = gene_ontology.ontology[go]
             true_genes = sorted(true_attributes['genes'])
             test_genes = sorted(test_attributes['genes'])
-            pdt.assert_array_equal(true_genes, test_genes)
+            pdt.assert_numpy_array_equal(true_genes, test_genes)
             pdt.assert_equal(true_attributes['name'], test_attributes['name'])
             pdt.assert_equal(true_attributes['domain'],
                              test_attributes['domain'])

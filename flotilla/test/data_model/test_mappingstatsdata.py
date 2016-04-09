@@ -33,4 +33,4 @@ class TestMappingStatsData(object):
         number_mapped_col = mapping_stats_kws.get('number_mapped_col')
         number_mapped = mapping_stats_data[number_mapped_col]
         too_few_mapped = number_mapped.index[number_mapped < min_reads]
-        pdt.assert_array_equal(mapping_stats.too_few_mapped, too_few_mapped)
+        pdt.assert_numpy_array_equal(mapping_stats.too_few_mapped, too_few_mapped)
