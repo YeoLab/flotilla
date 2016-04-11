@@ -150,38 +150,6 @@ class DataFramePCA(DataFrameReducerBase, decomposition.PCA):
     pass
 
 
-class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
-    """Perform Non-Negative Matrix Factorization on a DataFrame
-    """
-
-    def __init__(self, df, n_components=None, **kwargs):
-        kwargs.setdefault('init', 'nndsvd')
-        super(decomposition.NMF, self).__init__(n_components=n_components,
-                                                **kwargs)
-        self.reduced_space = self.fit_transform(df)
-
-    def fit(self, X):
-        """Override scikit-learn's fit() for our purposes
-
-        Duplicated fit code for DataFrameNMF because sklearn's NMF cheats for
-        efficiency and calls fit_transform. Method resolution order ("MRO")
-        resolves the closest (in this package)
-        _fit_transform first and so there's a recursion error:
-
-            def fit(self, X, y=None, **kwargs):
-                self._fit_transform(X, **kwargs)
-                return self
-        """
-        self._check_dataframe(X)
-        self.X = X
-        # notice this is fit_transform, not fit
-        reduced_space = super(decomposition.NMF, self).fit_transform(X)
-        self.components_ = pd.DataFrame(self.components_,
-                                        columns=self.X.columns).rename_axis(
-            self.relabel_pcs, 0)
-        return reduced_space
-
-
 class DataFrameICA(DataFrameReducerBase, decomposition.FastICA):
     """Perform Independent Comopnent Analysis on a DataFrame
     """

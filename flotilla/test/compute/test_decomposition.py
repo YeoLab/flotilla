@@ -41,30 +41,3 @@ class TestDataFramePCA():
                                 true_pca.explained_variance_ratio_)
         pdt.assert_frame_equal(test_pca.reduced_space,
                                true_pca.reduced_space)
-
-
-class TestDataFrameNMF():
-    def test_init(self, df_nonneg, RANDOM_STATE):
-        from flotilla.compute.decomposition import DataFrameNMF
-
-        test_nmf = DataFrameNMF(df_nonneg, n_components=2,
-                                random_state=RANDOM_STATE)
-
-        true_nmf = NMF(n_components=2, random_state=RANDOM_STATE,
-                       init='nndsvd')
-        reduced_space = true_nmf.fit_transform(df_nonneg.values)
-        pc_names = ['pc_{}'.format(i + 1) for i in
-                    range(true_nmf.components_.shape[0])]
-        true_nmf.reduced_space = pd.DataFrame(reduced_space,
-                                              index=df_nonneg.index,
-                                              columns=pc_names)
-        true_nmf.components_ = pd.DataFrame(true_nmf.components_,
-                                            index=pc_names,
-                                            columns=df_nonneg.columns)
-
-        npt.assert_almost_equal(test_nmf.X, df_nonneg.values, decimal=4)
-        pdt.assert_frame_equal(test_nmf.components_,
-                               true_nmf.components_)
-        pdt.assert_frame_equal(test_nmf.reduced_space,
-                               true_nmf.reduced_space,
-                               check_less_precise=True)
