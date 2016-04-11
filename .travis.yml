@@ -8,7 +8,7 @@ before_install:
   -O miniconda.sh; fi
 - chmod +x miniconda.sh
 - "./miniconda.sh -b"
-- if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then export PATH=~/miniconda/bin:$PATH;
+- if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then export PATH=~/miniconda2/bin:$PATH;
   else export PATH=~/miniconda3/bin/:$PATH; fi
 - conda update --yes conda
 - export COVERALLS_SERVICE_NAME=travis-ci
