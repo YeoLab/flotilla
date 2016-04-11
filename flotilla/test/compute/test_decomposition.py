@@ -2,7 +2,7 @@ import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
 import pytest
-from sklearn.decomposition import PCA, NMF
+from sklearn.decomposition import PCA
 
 
 @pytest.fixture(params=[None, 2])

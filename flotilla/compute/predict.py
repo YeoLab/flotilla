@@ -14,7 +14,7 @@ from sklearn.preprocessing import LabelEncoder
 import pandas.util.testing as pdt
 
 from ..util import memoize, timestamp
-from .decomposition import DataFramePCA, DataFrameNMF
+from .decomposition import DataFramePCA
 
 
 CLASSIFIER = 'ExtraTreesClassifier'
@@ -1017,10 +1017,6 @@ class PredictorBase(object):
         """Perform PCA on the top-performing features"""
         return DataFramePCA(self.subset_)
 
-    @memoize
-    def nmf(self):
-        """Perform NMF on the top-performing features"""
-        return DataFrameNMF(self.subset_)
 
 
 class Regressor(PredictorBase):
