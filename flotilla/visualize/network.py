@@ -131,7 +131,8 @@ class NetworkerViz(Networker):
             def node_size_mapper(x):
                 return 95
 
-        ax_pev.plot(pca.explained_variance_ratio_ * 100.)
+        percent_explained_variance = pca.explained_variance_ratio_ * 100.
+        ax_pev.plot(percent_explained_variance.values)
         ax_pev.axvline(n_pcs, label='cutoff', color=green)
         ax_pev.legend()
         ax_pev.set_ylabel("% explained variance")
