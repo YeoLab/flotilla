@@ -156,7 +156,7 @@ class DataFrameNMF(DataFrameReducerBase, decomposition.NMF):
 
     def __init__(self, df, n_components=None, **kwargs):
         kwargs.setdefault('init', 'nndsvd')
-        super(decomposition.NMF, self).__init__(n_components,
+        super(decomposition.NMF, self).__init__(n_components=n_components,
                                                 **kwargs)
         self.reduced_space = self.fit_transform(df)
 
