@@ -21,6 +21,7 @@ class TestExpressionData:
 
         if expression_log_base is not None:
             data = np.divide(np.log(data), np.log(expression_log_base))
+            thresh = np.divide(np.log(thresh), np.log(expression_log_base))
 
         pdt.assert_equal(expression.plus_one, expression_plus_one)
         pdt.assert_equal(expression.log_base, expression_log_base)
