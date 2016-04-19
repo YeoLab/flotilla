@@ -1677,7 +1677,5 @@ class Study(object):
 Study.interactive_classifier = Interactive.interactive_classifier
 Study.interactive_graph = Interactive.interactive_graph
 Study.interactive_pca = Interactive.interactive_pca
-Study.interactive_choose_outliers = Interactive.interactive_choose_outliers
-Study.interactive_reset_outliers = Interactive.interactive_reset_outliers
 Study.interactive_clustermap = Interactive.interactive_clustermap
 Study.interactive_correlations = Interactive.interactive_correlations
