@@ -1018,7 +1018,6 @@ class PredictorBase(object):
         return DataFramePCA(self.subset_)
 
 
-
 class Regressor(PredictorBase):
 
     categorical = False

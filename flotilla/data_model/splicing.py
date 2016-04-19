@@ -10,7 +10,7 @@ import seaborn as sns
 from .base import BaseData
 from ..util import timestamp
 from ..visualize.splicing import lavalamp, hist_single_vs_pooled_diff, \
-    lavalamp_pooled_inconsistent, nmf_space_transitions
+    lavalamp_pooled_inconsistent
 
 FRACTION_DIFF_THRESH = 0.1
 

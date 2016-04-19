@@ -1,6 +1,7 @@
 """
 Detect outlier samples in data
 """
+import sys
 
 import sklearn
 import pandas as pd
@@ -37,7 +38,7 @@ class OutlierDetection(object):
         if method is None:
             method = sklearn.svm.OneClassSVM
 
-        print kernel
+        sys.stdout.write('SVM Kernel is: {}\n'.format(kernel))
 
         kwargs.update(dict(nu=nu, kernel=kernel, gamma=gamma,
                            random_state=random_state))

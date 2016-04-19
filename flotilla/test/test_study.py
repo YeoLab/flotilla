@@ -91,13 +91,13 @@ class TestStudy(object):
         pdt.assert_series_equal(study.sample_id_to_color,
                                 study.metadata.sample_id_to_color)
         pdt.assert_numpy_array_equal(study.phenotype_transitions,
-                               study.metadata.phenotype_transitions)
+                                     study.metadata.phenotype_transitions)
         pdt.assert_numpy_array_equal(study.phenotype_color_ordered,
-                               study.metadata.phenotype_color_order)
+                                     study.metadata.phenotype_color_order)
         pdt.assert_equal(study.default_sample_subset, 'all_samples')
         pdt.assert_equal(study.default_feature_subset, 'variant')
         pdt.assert_numpy_array_equal(study.default_sample_subsets,
-                               true_default_sample_subsets)
+                                     true_default_sample_subsets)
         pdt.assert_dict_equal(study.default_feature_subsets, {})
 
     @pytest.mark.xfail
@@ -187,7 +187,7 @@ class TestStudy(object):
         study = Study(metadata, mapping_stats_data=mapping_stats_data,
                       **kwargs)
         pdt.assert_numpy_array_equal(sorted(study.technical_outliers),
-                               sorted(technical_outliers))
+                                     sorted(technical_outliers))
 
     def test_init_expression(self, metadata_data, metadata_kws,
                              expression_data, expression_kws):
@@ -205,7 +205,7 @@ class TestStudy(object):
         study = Study(metadata, expression_data=expression,
                       **kwargs)
         pdt.assert_numpy_array_equal(study.expression.data_original,
-                               expression_data)
+                                     expression_data)
 
     def test_init_splicing(self, metadata_data, metadata_kws,
                            splicing_data, splicing_kws):
@@ -223,7 +223,7 @@ class TestStudy(object):
         study = Study(metadata, splicing_data=splicing,
                       **kwargs)
         pdt.assert_numpy_array_equal(study.splicing.data_original,
-                               splicing_data)
+                                     splicing_data)
 
     def test_feature_subset_to_feature_ids(self, study, data_type,
                                            feature_subset):

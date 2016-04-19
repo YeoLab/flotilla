@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import semantic_version
 import seaborn as sns
+import six
 
 from .data_model.metadata import MetaData, PHENOTYPE_COL, POOLED_COL, \
     OUTLIER_COL
@@ -662,8 +663,8 @@ class Study(object):
         outlier_detector.predict(reducer.reduced_space)
         outlier_detector.title = "_".join(
             ['outlier', data_type, sample_subset, feature_subset])
-        print "setting outlier type:\"{}\" in metadata".format(
-            outlier_detector.title)
+        six.print_("setting outlier type:\"{}\" in metadata".format(
+            outlier_detector.title))
         if outlier_detector.title not in self.metadata.data:
             self.metadata.data[outlier_detector.title] = False
 

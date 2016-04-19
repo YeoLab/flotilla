@@ -6,6 +6,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import six
 
 # from .color import red, blue, purple, grey, green
 from ..compute.splicing import get_switchy_score_order
@@ -79,7 +80,7 @@ def lavalamp(psi, yticks=(0, 0.5, 1), x_offset=0, title='', ax=None,
     y = y[:, order]
 
     n_samples, n_events = y.shape
-    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples)))
+    x = np.vstack((np.arange(n_events) for _ in six.moves.range(n_samples)))
     # .astype(float) is to get rid of a deprecation warning
     x = x.astype(float)
     x += x_offset
@@ -137,7 +138,7 @@ def lavalamp_pooled_inconsistent(singles, pooled, pooled_inconsistent,
 
     color = seaborn_colors[0] if color is None else color
     pooled_kwargs = {'alpha': 0.5, 'markeredgecolor': 'k',
-                       'markerfacecolor': 'none', 'markeredgewidth': 1}
+                     'markerfacecolor': 'none', 'markeredgewidth': 1}
 
     pooled = pooled.dropna(axis=1, how='all')
 

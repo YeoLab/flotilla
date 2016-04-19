@@ -27,7 +27,7 @@ class TestGeneOntologyData(object):
 
         pdt.assert_frame_equal(true_data, gene_ontology.data)
         pdt.assert_numpy_array_equal(sorted(true_all_genes),
-                               sorted(gene_ontology.all_genes))
+                                     sorted(gene_ontology.all_genes))
 
         pdt.assert_contains_all(true_ontology.keys(), gene_ontology.ontology)
         pdt.assert_contains_all(gene_ontology.ontology.keys(), true_ontology)

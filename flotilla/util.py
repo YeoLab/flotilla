@@ -16,6 +16,8 @@ import cPickle
 import gzip
 import tempfile
 
+import six
+
 import pandas as pd
 
 
@@ -293,7 +295,7 @@ def timestamp():
     return str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-class AssertionError(StandardError):
+class AssertionError(BaseException):
     """ Assertion failed. """
 
     def __init__(self, *args, **kwargs):  # real signature unknown
@@ -306,7 +308,7 @@ class AssertionError(StandardError):
 
 
 def link_to_list(link):
-    print 'link', link
+    six.print_('link', link)
     try:
         assert link.startswith("http") or os.path.exists(os.path.abspath(link))
     except AssertionError:

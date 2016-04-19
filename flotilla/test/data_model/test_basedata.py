@@ -54,7 +54,8 @@ class TestBaseData:
         pdt.assert_series_equal(base_data.feature_renamer_series,
                                 feature_renamer_series)
         pdt.assert_frame_equal(base_data.outliers, outliers_df)
-        pdt.assert_numpy_array_equal(base_data.outlier_samples, outlier_samples)
+        pdt.assert_numpy_array_equal(base_data.outlier_samples,
+                                     outlier_samples)
         assert isinstance(base_data.predictor_config_manager,
                           PredictorConfigManager)
         assert isinstance(base_data.predictor_dataset_manager,
