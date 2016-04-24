@@ -2,6 +2,11 @@
 Base data class for all data types. All data types in flotilla inherit from
 this, or a child object (like ExpressionData).
 """
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from six import text_type
+
 import sys
 
 import matplotlib.pyplot as plt
@@ -15,11 +20,13 @@ from ..compute.decomposition import DataFramePCA
 from ..compute.infotheory import binify, cross_phenotype_jsd, jsd_df_to_2d
 from ..compute.predict import PredictorConfigManager, \
     PredictorDataSetManager, CLASSIFIER
+from ..compute.outlier import OutlierDetection
+
 from ..visualize.decomposition import DecompositionViz
 from ..visualize.generic import violinplot, simple_twoway_scatter
 from ..visualize.network import NetworkerViz
 from ..visualize.predict import ClassifierViz
-from ..compute.outlier import OutlierDetection
+
 
 MINIMUM_FEATURE_SUBSET = 20
 
@@ -1020,8 +1027,9 @@ class BaseData(object):
         # feature_id, renamed = feature_id
         # else:
         # renamed = self.feature_renamer(feature_id)
-        title = '{}\n{}'.format(renamed, '\n'.join(
-            feature_id.split('@')))
+        # TODO check switch to unicode
+        # title = b'{}\n{}'.format(renamed, b'\n'.join(feature_id.split(b'@')))
+        title = renamed + u"\n" + u"\n".join(feature_id.split(u'@'))
 
         violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
                    pooled=pooled, order=phenotype_order,
@@ -1129,9 +1137,10 @@ class BaseData(object):
         """
         feature1s = self.maybe_renamed_to_feature_id(feature1)
         feature2s = self.maybe_renamed_to_feature_id(feature2)
-        if isinstance(feature1s, str):
+
+        if isinstance(feature1s, text_type):
             feature1s = [feature1s]
-        if isinstance(feature2s, str):
+        if isinstance(feature2s, text_type):
             feature2s = [feature2s]
 
         for f1 in feature1s:
@@ -1157,8 +1166,7 @@ class BaseData(object):
     @staticmethod
     def _figsizer(shape, multiplier=0.25):
         """Scale a heatmap figure based on the dataframe shape"""
-        return tuple(reversed(map(lambda x: min(x * multiplier, 40),
-                                  shape)))
+        return tuple(reversed([min(x * multiplier, 40) for x in shape]))
 
     def plot_clustermap(self, sample_ids=None, feature_ids=None, data=None,
                         feature_colors=None, sample_id_to_color=None,
@@ -1285,7 +1293,7 @@ def subsets_from_metadata(metadata, minimum, subset_type, ignore=None):
                         continue
                     name = '{}: {}'.format(col, group)
                     subsets[name] = grouped.groups[group]
-        for sample_subset in subsets.keys():
+        for sample_subset in subsets.copy().keys():
             name = 'not ({})'.format(sample_subset)
             if 'False' in name or 'True' in name:
                 continue

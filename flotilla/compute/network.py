@@ -3,6 +3,9 @@ Compute networks (the kind with nodes and edges) on data. Visualize with
 :py:mod:flotilla.visualize.network
 """
 
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import networkx as nx
 import numpy as np
 import pandas as pd

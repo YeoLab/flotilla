@@ -1,3 +1,7 @@
+"""
+data model
+"""
+
 from .expression import ExpressionData
 from .gene_ontology import GeneOntologyData
 from .metadata import MetaData

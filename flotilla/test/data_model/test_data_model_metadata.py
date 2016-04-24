@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from six import iteritems
 from collections import defaultdict
 from itertools import cycle
 
@@ -59,7 +62,7 @@ class TestMetaData(object):
                 for k in true_phenotype_order)
         else:
             true_phenotype_to_color = {}
-            for phenotype, color in phenotype_to_color.iteritems():
+            for phenotype, color in iteritems(phenotype_to_color):
                 try:
                     color = str_to_color[color]
                 except KeyError:
@@ -70,7 +73,7 @@ class TestMetaData(object):
             markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
 
             def marker_factory():
-                return markers.next()
+                return next(markers)
             true_phenotype_to_marker = defaultdict(marker_factory)
             for x in true_phenotype_order:
                 true_phenotype_to_marker[x]
@@ -78,16 +81,17 @@ class TestMetaData(object):
         else:
             true_phenotype_to_marker = phenotype_to_marker
 
-        true_phenotype_transitions = zip(true_phenotype_order[:-1],
-                                         true_phenotype_order[1:])
+        true_phenotype_transitions = list(zip(true_phenotype_order[:-1],
+                                              true_phenotype_order[1:])
+                                          )
         true_unique_phenotypes = self.metadata[self.phenotype_col].unique()
         true_n_phenotypes = len(true_unique_phenotypes)
 
-        true_colors = map(mpl.colors.rgb2hex,
-                          sns.color_palette('husl',
-                                            n_colors=true_n_phenotypes))
+        true_colors = [mpl.colors.rgb2hex(rgb) for rgb
+                       in sns.color_palette('husl',
+                                            n_colors=true_n_phenotypes)]
         colors = iter(true_colors)
-        true_default_phenotype_to_color = defaultdict(lambda: colors.next())
+        true_default_phenotype_to_color = defaultdict(lambda: next(colors))
 
         true_sample_id_to_phenotype = self.metadata[self.phenotype_col]
         true_phenotype_color_order = [true_phenotype_to_color[p]
@@ -99,7 +103,8 @@ class TestMetaData(object):
         true_sample_subsets = subsets_from_metadata(
             self.metadata, self.kws['minimum_sample_subset'], 'samples')
 
-        pdt.assert_frame_equal(test_metadata.data, self.metadata)
+        pdt.assert_frame_equal(test_metadata.data,
+                               self.metadata)
         pdt.assert_series_equal(test_metadata.sample_id_to_phenotype,
                                 true_sample_id_to_phenotype)
         pdt.assert_numpy_array_equal(test_metadata.unique_phenotypes,
@@ -112,7 +117,8 @@ class TestMetaData(object):
                                      true_phenotype_order)
         pdt.assert_numpy_array_equal(test_metadata.phenotype_transitions,
                                      true_phenotype_transitions)
-        pdt.assert_numpy_array_equal(test_metadata._colors, true_colors)
+        pdt.assert_numpy_array_equal(test_metadata._colors,
+                                     true_colors)
         pdt.assert_numpy_array_equal(test_metadata._default_phenotype_to_color,
                                      true_default_phenotype_to_color)
         pdt.assert_dict_equal(test_metadata.phenotype_to_color,

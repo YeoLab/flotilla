@@ -8,4 +8,3 @@ Miscellaneous
 ~~~~~~~~~~~~~
 
 - Fixed tutorial building on the documentation page
-

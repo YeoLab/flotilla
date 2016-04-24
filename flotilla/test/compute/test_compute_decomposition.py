@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
@@ -11,7 +14,9 @@ def n_components(request):
 
 
 class TestDataFramePCA():
+
     def test_init(self, df_norm, n_components):
+
         from flotilla.compute.decomposition import DataFramePCA
 
         test_pca = DataFramePCA(df_norm, n_components=n_components)
@@ -41,3 +46,11 @@ class TestDataFramePCA():
                                 true_pca.explained_variance_ratio_)
         pdt.assert_frame_equal(test_pca.reduced_space,
                                true_pca.reduced_space)
+
+
+# class TestDataFrameICA():
+#     pass
+#
+#
+# class TestDataFrameTSNE():
+#     pass

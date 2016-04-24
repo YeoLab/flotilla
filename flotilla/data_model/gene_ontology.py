@@ -1,7 +1,16 @@
-from collections import defaultdict, Iterable
-import sys
-import warnings
+"""
+Gene ontology
+"""
 
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+try:
+    basestring
+except NameError:
+    basestring = str
+
+from collections import defaultdict, Iterable
+import warnings
 import numpy as np
 import pandas as pd
 from scipy.stats import hypergeom
@@ -11,7 +20,8 @@ from ..util import timestamp
 
 class GeneOntologyData(object):
 
-    domains = frozenset(['biological_process', 'molecular_function',
+    domains = frozenset(['biological_process',
+                         'molecular_function',
                          'cellular_component'])
 
     def __init__(self, data):
@@ -37,16 +47,17 @@ class GeneOntologyData(object):
 
         # Need "data_original" to be consistent with other datatypes
         self.data_original = self.data
-        sys.stdout.write('{}\tBuilding Gene Ontology '
-                         'database...\n'.format(timestamp()))
+        # sys.stdout.write('{}\tBuilding Gene Ontology '
+        #                  'database...\n'.format(timestamp()))
+        print(timestamp(), '\tBuilding Gene Ontology database...')
         self.ontology = defaultdict(dict)
         for go, df in data.groupby('GO Term Accession'):
             self.ontology[go]['genes'] = set(df['Ensembl Gene ID'])
             self.ontology[go]['name'] = df['GO Term Name'].values[0]
             self.ontology[go]['domain'] = df['GO domain'].values[0]
             self.ontology[go]['n_genes'] = len(self.ontology[go]['genes'])
-        sys.stdout.write('{}\t\tDone.\n'.format(timestamp()))
-
+        # sys.stdout.write('{}\t\tDone.\n'.format(timestamp()))
+        print(timestamp(), '\t\tDone')
         self.all_genes = self.data['Ensembl Gene ID'].unique()
 
     def enrichment(self, features_of_interest, background=None,
@@ -55,8 +66,8 @@ class GeneOntologyData(object):
                    domain=None):
         """Bonferroni-corrected hypergeometric p-values of GO enrichment
 
-        Calculates hypergeometric enrichment of the features of interest, in
-        each GO category.
+        Calculates hypergeometric enrichment of the features of interest,
+        in each GO category.
 
         Parameters
         ----------
@@ -90,8 +101,8 @@ class GeneOntologyData(object):
         Raises
         ------
         ValueError
-            If features of interest and background do not overlap, or invalid
-            GO domains are given
+            If features of interest and background do not overlap,
+            or invalid GO domains are given
         """
         cross_reference = {} if cross_reference is None else cross_reference
         background = self.all_genes if background is None else background
@@ -104,7 +115,8 @@ class GeneOntologyData(object):
         domains = self.domains
         valid_domains = ",".join("'{}'".format(x) for x in self.domains)
 
-        if isinstance(domain, str):
+        # TODO more elegant type check
+        if isinstance(domain, str) or isinstance(domain, basestring):
             if domain not in self.domains:
                 raise ValueError(
                     "'{}' is not a valid GO domain. "

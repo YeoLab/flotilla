@@ -1,0 +1,12 @@
+name: flotilla
+dependencies:
+- jupyter
+- pymongo
+- scikit-learn
+- seaborn
+- semantic_version
+- statsmodels
+- xlrd
+- pip:
+  - brewer2mpl
+  - husl

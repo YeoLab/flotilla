@@ -1,4 +1,11 @@
-from __future__ import division
+"""
+compute / expression
+"""
+
+# from __future__ import division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import itertools
 import math
 import sys

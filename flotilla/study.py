@@ -2,6 +2,11 @@
 Data models for "studies" studies include attributes about the data and are
 heavier in terms of data load
 """
+
+from __future__ import absolute_import, division, print_function
+from __future__ import unicode_literals
+from six import iteritems
+
 import inspect
 import itertools
 import json
@@ -14,21 +19,24 @@ import numpy as np
 import pandas as pd
 import semantic_version
 import seaborn as sns
-import six
 
-from .data_model.metadata import MetaData, PHENOTYPE_COL, POOLED_COL, \
-    OUTLIER_COL
+from .data_model.metadata import MetaData
+from .data_model.metadata import PHENOTYPE_COL, POOLED_COL, OUTLIER_COL
 from .data_model.expression import ExpressionData
 from .data_model.gene_ontology import GeneOntologyData
 from .data_model.quality_control import MappingStatsData, MIN_READS
 from .data_model.splicing import SplicingData, FRACTION_DIFF_THRESH
 from .data_model.supplemental import SupplementalData
+
 from .compute.predict import PredictorConfigManager
-from .datapackage import datapackage_url_to_dict, \
-    check_if_already_downloaded, make_study_datapackage
+
 from .visualize.color import blue
-from .visualize.ipython_interact import Interactive
+from .visualize import ipython_interact
+
+from .datapackage import datapackage_url_to_dict, check_if_already_downloaded
+from .datapackage import make_study_datapackage
 from .datapackage import FLOTILLA_DOWNLOAD_DIR
+
 from .util import load_csv, load_json, load_tsv, load_gzip_pickle_df, \
     load_pickle_df, load_hdf, timestamp, cached_property
 
@@ -75,7 +83,10 @@ class Study(object):
 
     _default_plot_kwargs = {'marker': 'o', 'color': blue}
 
-    def __init__(self, sample_metadata, version='0.1.0',
+    def __init__(self,
+                 sample_metadata,
+                 version='0.1.0',
+
                  metadata_pooled_col=POOLED_COL,
                  metadata_minimum_samples=0,
                  metadata_phenotype_col=PHENOTYPE_COL,
@@ -86,6 +97,7 @@ class Study(object):
                  metadata_ignore_subset_cols=None,
                  metadata_batch_cols='batch',
                  metadata_batch_min_samples=3,
+
                  expression_data=None,
                  expression_feature_data=None,
                  expression_feature_rename_col=None,
@@ -94,18 +106,24 @@ class Study(object):
                  expression_thresh=-np.inf,
                  expression_plus_one=False,
                  expression_correct_batch_effects=False,
+
                  splicing_data=None,
                  splicing_feature_data=None,
                  splicing_feature_rename_col=None,
                  splicing_feature_ignore_subset_cols=None,
                  splicing_feature_expression_id_col=None,
+
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col=None,
                  mapping_stats_min_reads=MIN_READS,
-                 drop_outliers=True, species=None,
+
+                 drop_outliers=True,
+                 species=None,
                  gene_ontology_data=None,
                  predictor_config_manager=None,
-                 license=None, title=None, sources=None,
+                 license=None,
+                 title=None,
+                 sources=None,
                  default_sample_subset="all_samples",
                  default_feature_subset="variant",
                  supplemental_data=None):
@@ -127,6 +145,7 @@ class Study(object):
             major.minor.patch format, as the "patch" number will be increased
             if you change something in the study and then study.save() it.
             (default "0.1.0")
+
         expression_data : pandas.DataFrame
             Samples x feature dataframe of gene expression measurements,
             e.g. from an RNA-Seq or a microarray experiment. Assumed to be
@@ -141,6 +160,7 @@ class Study(object):
             example, if your gene IDs are Ensembl IDs, but you want to plot
             UCSC IDs, make sure the column you want, e.g. "ucsc_id" is in your
             dataframe and specify that. (default "gene_name")
+
         expression_log_base : float
             If you want to log-transform your expression data (and it's not
             already log-transformed), use this number as the base of the
@@ -150,6 +170,7 @@ class Study(object):
             Minimum (non log-transformed) expression value. (default -inf)
         expression_plus_one : bool
             Whether or not to add 1 to the expression data. (default False)
+
         splicing_data : pandas.DataFrame
             Samples x feature dataframe of percent spliced in scores, e.g. as
             measured by the program MISO. Assumed that these values only fall
@@ -164,9 +185,11 @@ class Study(object):
             example, if your splicing IDs are MISO IDs, but you want to plot
             Ensembl IDs, make sure the column you want, e.g. "ensembl_id" is
             in your dataframe and specify that. Default "gene_name".
+
         splicing_feature_expression_id_col : str
             A column name in the splicing_feature_data dataframe that
             corresponds to the row names of the expression data
+
         mapping_stats_data : pandas.DataFrame
             Samples x feature dataframe of mapping stats measurements.
             Currently, this
@@ -174,6 +197,7 @@ class Study(object):
             A column name in the mapping_stats_data which specifies the
             number of (uniquely or not) mapped reads. Default "Uniquely
             mapped reads number"
+
         drop_outliers : bool
             Whether or not to drop samples indicated as outliers in the
             sample_metadata from the other data, i.e. with a column
@@ -183,6 +207,7 @@ class Study(object):
             Name of the species and genome version, e.g. 'hg19' or 'mm10'.
         gene_ontology_data : pandas.DataFrame
             Gene ids x ontology categories dataframe used for GO analysis.
+
         metadata_pooled_col : str
             Column in metadata_data which specifies as a boolean
             whether or not this sample was pooled.
@@ -200,9 +225,11 @@ class Study(object):
 
         [1] http://stackoverflow.com/q/12513185/1628971
         """
-        sys.stdout.write("{}\tInitializing Study\n".format(timestamp()))
-        sys.stdout.write("{}\tInitializing Predictor configuration manager "
-                         "for Study\n".format(timestamp()))
+        print(timestamp(),
+              "\tInitializing Study")
+        print(timestamp(),
+              "\tInitializing Predictor configuration manager for Study")
+        #################################################################
         self.predictor_config_manager = predictor_config_manager \
             if predictor_config_manager is not None \
             else PredictorConfigManager()
@@ -217,11 +244,15 @@ class Study(object):
         self.sources = sources
         self.version = version
 
-        sys.stdout.write('{}\tLoading metadata\n'.format(timestamp()))
+        print(timestamp(),
+              '\tLoading metadata')
+        ###########################
         self.metadata = MetaData(
-            sample_metadata, metadata_phenotype_order,
+            sample_metadata,
+            metadata_phenotype_order,
             metadata_phenotype_to_color,
-            metadata_phenotype_to_marker, pooled_col=metadata_pooled_col,
+            metadata_phenotype_to_marker,
+            pooled_col=metadata_pooled_col,
             ignore_subset_cols=metadata_ignore_subset_cols,
             outlier_col=metadata_outlier_col,
             phenotype_col=metadata_phenotype_col,
@@ -303,6 +334,7 @@ class Study(object):
         if expression_data is not None:
             sys.stdout.write(
                 "{}\tLoading expression data\n".format(timestamp()))
+            ########################################################
             feature_ignore_subset_cols = expression_feature_ignore_subset_cols
             self.expression = ExpressionData(
                 expression_data,
@@ -319,9 +351,11 @@ class Study(object):
                                                 .keys())
         else:
             self.expression = None
+
         if splicing_data is not None:
             sys.stdout.write("{}\tLoading splicing data\n".format(
                 timestamp()))
+            #######################################################
             self.splicing = SplicingData(
                 splicing_data, feature_data=splicing_feature_data,
                 feature_rename_col=splicing_feature_rename_col,
@@ -472,9 +506,8 @@ class Study(object):
                     filename = '{}/{}'.format(datapackage_dir,
                                               filename)
 
-                # Test if the file exists, if not, then add the datapackage
-                # file
                 if not os.path.exists(filename):
+                    # add the datapackage file
                     filename = os.path.join(datapackage_dir, filename)
             return filename
         else:
@@ -560,9 +593,9 @@ class Study(object):
         except KeyError:
             raise AttributeError('The datapackage.json file is required to '
                                  'have the "metadata" resource')
-        dfs = dict(('{}_data'.format(k), v) for k, v in dfs.iteritems())
+        dfs = dict(('{}_data'.format(k), v) for k, v in iteritems(dfs))
 
-        nones = [k for k, v in kwargs.iteritems() if v is None]
+        nones = [k for k, v in iteritems(kwargs) if v is None]
         for key in nones:
             kwargs.pop(key)
         kwargs.update(species_kws)
@@ -663,8 +696,11 @@ class Study(object):
         outlier_detector.predict(reducer.reduced_space)
         outlier_detector.title = "_".join(
             ['outlier', data_type, sample_subset, feature_subset])
-        six.print_("setting outlier type:\"{}\" in metadata".format(
+        print("setting outlier type:\"{}\" in metadata".format(
             outlier_detector.title))
+        # alternative if we need to support python2.5
+        # six.print_("setting outlier type:\"{}\" in metadata".format(
+        #     outlier_detector.title))
         if outlier_detector.title not in self.metadata.data:
             self.metadata.data[outlier_detector.title] = False
 
@@ -758,12 +794,21 @@ class Study(object):
         except (AttributeError, ValueError):
             return phenotype_subset
 
-    def plot_pca(self, data_type='expression', x_pc=1, y_pc=2,
-                 sample_subset=None, feature_subset=None,
-                 title='', featurewise=False, plot_violins=False,
-                 show_point_labels=False, reduce_kwargs=None,
-                 color_samples_by=None, bokeh=False,
-                 most_variant_features=False, std_multiplier=2,
+    def plot_pca(self,
+                 data_type='expression',
+                 x_pc=1,
+                 y_pc=2,
+                 sample_subset=None,
+                 feature_subset=None,
+                 title='',
+                 featurewise=False,
+                 plot_violins=False,
+                 show_point_labels=False,
+                 reduce_kwargs=None,
+                 color_samples_by=None,
+                 bokeh=False,
+                 most_variant_features=False,
+                 std_multiplier=2,
                  scale_by_variance=True,
                  **kwargs):
         """Performs DataFramePCA on both expression and splicing study_data
@@ -914,18 +959,22 @@ class Study(object):
 
         if data_type == "expression":
             return self.expression.networks.draw_graph(
-                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_ids=sample_ids,
+                feature_ids=feature_ids,
                 sample_id_to_color=self.sample_id_to_color,
                 label_to_color=label_to_color,
-                label_to_marker=label_to_marker, groupby=groupby,
+                label_to_marker=label_to_marker,
+                groupby=groupby,
                 featurewise=featurewise,
                 **kwargs)
         elif data_type == "splicing":
             return self.splicing.networks.draw_graph(
-                sample_ids=sample_ids, feature_ids=feature_ids,
+                sample_ids=sample_ids,
+                feature_ids=feature_ids,
                 sample_id_to_color=self.sample_id_to_color,
                 label_to_color=label_to_color,
-                label_to_marker=label_to_marker, groupby=groupby,
+                label_to_marker=label_to_marker,
+                groupby=groupby,
                 featurewise=featurewise,
                 **kwargs)
 
@@ -967,7 +1016,7 @@ class Study(object):
 
         if nothing_to_classify:
             raise ValueError("All samples are True (or all samples are "
-                             "False) or all are the same, cannot classify"
+                             "False) or all are the same, cannot classify "
                              "when all samples are the same")
         trait_data = pd.Series(trait_data, name=trait,
                                index=self.metadata.data.index)
@@ -1073,7 +1122,7 @@ class Study(object):
         feature_ids = self.feature_subset_to_feature_ids(
             'splicing', feature_subset=feature_subset)
 
-        celltype_and_sample_ids = celltype_groups.groups.iteritems()
+        celltype_and_sample_ids = iteritems(celltype_groups.groups)
         for i, (phenotype, sample_ids) in enumerate(celltype_and_sample_ids):
             # import pdb; pdb.set_trace()
 
@@ -1105,7 +1154,7 @@ class Study(object):
         feature_ids = self.feature_subset_to_feature_ids(
             'splicing', feature_subset=feature_subset)
 
-        celltype_and_sample_ids = celltype_groups.groups.iteritems()
+        celltype_and_sample_ids = iteritems(celltype_groups.groups)
         index = pd.MultiIndex.from_product([celltype_groups.groups.keys(),
                                             ['n_events', 'percent']])
         percents = pd.Series(index=index)
@@ -1531,9 +1580,22 @@ class Study(object):
         :rtype:
         """
         # Establish common strings
-
         splicing_common_id = self.splicing.feature_data[
             self.splicing.feature_expression_id_col]
+
+        # print("*****************************")
+        # print("splicing data")
+        # print(self.splicing.data.head())
+        # print("*****************************")
+        # print("splicing feature_data")
+        # print(self.splicing.feature_data.head())
+        # print("*****************************")
+        # print("splicing feature_expression_id_col")
+        # print(self.splicing.feature_expression_id_col)
+        # print("*****************************")
+        # print("splicing_common_id")
+        # print(splicing_common_id.head())
+        # print("*****************************")
 
         # Tidify splicing
         splicing = self.splicing.data
@@ -1547,9 +1609,11 @@ class Study(object):
 
         s = splicing_common_id.dropna()
 
+        # TODO more elegant code
+        templist = [zip([k] * len(v.split(u',')), v.split(u','))
+                    for k, v in iteritems(s)]
         event_name_to_ensembl_ids = list(itertools.chain(
-            *[zip([k] * len(v.split(',')), v.split(',')) for k, v in
-              s.iteritems()]))
+            *templist))
         index, data = zip(*event_name_to_ensembl_ids)
         event_name_to_ensembl_ids = pd.Series(data, index=index,
                                               name=self._common_id)
@@ -1674,8 +1738,10 @@ class Study(object):
             min_background_size=min_background_size)
 
 # Add interactive visualizations
-Study.interactive_classifier = Interactive.interactive_classifier
-Study.interactive_graph = Interactive.interactive_graph
-Study.interactive_pca = Interactive.interactive_pca
-Study.interactive_clustermap = Interactive.interactive_clustermap
-Study.interactive_correlations = Interactive.interactive_correlations
+Study.interactive_pca = ipython_interact.interactive_pca
+Study.interactive_graph = ipython_interact.interactive_graph
+
+Study.interactive_classifier = ipython_interact.interactive_classifier
+
+Study.interactive_clustermap = ipython_interact.interactive_clustermap
+Study.interactive_correlations = ipython_interact.interactive_correlations

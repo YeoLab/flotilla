@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import pytest
 import numpy as np
 import numpy.testing as npt
@@ -16,6 +19,7 @@ def array(request):
 
 
 def test_switchy_score(array):
+
     from flotilla.compute.splicing import switchy_score
 
     test_switchy_score = switchy_score(array)
@@ -29,8 +33,9 @@ def test_switchy_score(array):
 
 
 def test_get_switchy_score_order(splicing_data):
-    from flotilla.compute.splicing import get_switchy_score_order, \
-        switchy_score
+
+    from flotilla.compute.splicing import switchy_score
+    from flotilla.compute.splicing import get_switchy_score_order
 
     test_score_order = get_switchy_score_order(splicing_data)
 

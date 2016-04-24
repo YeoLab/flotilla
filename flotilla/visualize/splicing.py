@@ -2,11 +2,19 @@
 Splicing-specific visualization classes and methods
 """
 
+from __future__ import absolute_import, division, print_function
+from __future__ import unicode_literals
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import six
+# import six
+# instead of import six, why not just define xrange for py3
+try:
+    xrange
+except NameError:  # python3
+    xrange = range
 
 # from .color import red, blue, purple, grey, green
 from ..compute.splicing import get_switchy_score_order
@@ -80,7 +88,10 @@ def lavalamp(psi, yticks=(0, 0.5, 1), x_offset=0, title='', ax=None,
     y = y[:, order]
 
     n_samples, n_events = y.shape
-    x = np.vstack((np.arange(n_events) for _ in six.moves.range(n_samples)))
+    #  instead of import six, define xrange for py3 and use it:
+    # x = np.vstack((np.arange(n_events) for _ in six.moves.range(n_samples)))
+    x = np.vstack((np.arange(n_events) for _ in xrange(n_samples)))
+
     # .astype(float) is to get rid of a deprecation warning
     x = x.astype(float)
     x += x_offset

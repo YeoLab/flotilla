@@ -1,3 +1,10 @@
+"""
+
+"""
+
+from __future__ import absolute_import, division, print_function
+from __future__ import unicode_literals
+
 from collections import defaultdict
 
 import numpy as np
@@ -106,6 +113,8 @@ class TestGeneOntologyData(object):
 
         pdt.assert_frame_equal(test_enrichment_df, true_enrichment_df)
 
+    # TODO : FOUR TESTS EXPECTED TO FAIL
+    ####################################
     @pytest.mark.xfail
     def test_invalid_background(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
@@ -132,6 +141,7 @@ class TestGeneOntologyData(object):
         features_of_interest = gene_ontology.all_genes[:10]
         gene_ontology.enrichment(features_of_interest,
                                  domain=['fake_domain1', 'fake_domain2'])
+    ##########################################################################
 
     def test_custom_domain_str(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
@@ -357,8 +367,8 @@ class TestGeneOntologyData(object):
                                    len(background_in_go),
                                    n_features_of_interest)
             p_value = 0 if p_value < 0 else p_value
-            symbols = [cross_reference[f] if f in cross_reference else f for f
-                       in features_in_go]
+            symbols = [cross_reference[f] if f in cross_reference else f
+                       for f in features_in_go]
             enrichment['p_value'][go_term] = p_value
             enrichment['n_features_of_interest_in_go_term'][go_term] = len(
                 features_in_go)

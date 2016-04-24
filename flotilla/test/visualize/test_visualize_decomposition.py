@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from collections import defaultdict
 from itertools import cycle
 
@@ -19,15 +22,24 @@ def pca(df_norm):
 
 @pytest.fixture
 def kwargs():
-    return dict(feature_renamer=None, groupby=None,
-                singles=None, pooled=None, outliers=None,
+    return dict(feature_renamer=None,
+                groupby=None,
+                singles=None,
+                pooled=None,
+                outliers=None,
                 featurewise=False,
-                order=None, violinplot_kws=None,
-                data_type='expression', label_to_color=None,
+                order=None,
+                violinplot_kws=None,
+                data_type='expression',
+                label_to_color=None,
                 label_to_marker=None,
-                scale_by_variance=True, x_pc='pc_1',
-                y_pc='pc_2', n_vectors=20, distance='L1',
-                n_top_pc_features=50, max_char_width=30)
+                scale_by_variance=True,
+                x_pc='pc_1',
+                y_pc='pc_2',
+                n_vectors=20,
+                distance='L1',
+                n_top_pc_features=50,
+                max_char_width=30)
 
 
 @pytest.fixture
@@ -36,9 +48,9 @@ def large_dataframe():
     ncol = 1000
     index = ['sample_{}'.format(i) for i in np.arange(nrow)]
     columns = ['feature_{}'.format(i) for i in np.arange(ncol)]
-    df = pd.DataFrame(data=np.random.randn(nrow, ncol), index=index,
+    df = pd.DataFrame(data=np.random.randn(nrow, ncol),
+                      index=index,
                       columns=columns)
-
     return df
 
 
@@ -65,14 +77,14 @@ def test_init(pca, kwargs):
                                     n_colors=len(true_grouped)))
 
     def color_factory():
-        return colors.next()
+        return next(colors)
 
     true_label_to_color = defaultdict(color_factory)
 
     markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
 
     def marker_factory():
-        return markers.next()
+        return next(markers)
 
     true_label_to_marker = defaultdict(marker_factory)
     for group in true_grouped.groups:

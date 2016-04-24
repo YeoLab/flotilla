@@ -2,3 +2,4 @@ runipy
 numpydoc
 sphinx
 fabric
+jupyter
