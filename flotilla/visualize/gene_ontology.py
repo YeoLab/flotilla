@@ -8,6 +8,7 @@ MACHINE_EPSILON = np.finfo(float).eps
 
 def plot_go_enrichment(x_col='bonferonni_corrected_negative_log_p_value',
                        data=None, ax=None, max_categories=10,
+                       yticklabels='go_name',
                        **kwargs):
     data = data.sort(x_col, ascending=True)
     data[x_col] = data[x_col].replace(0, np.nan)
@@ -24,7 +25,7 @@ def plot_go_enrichment(x_col='bonferonni_corrected_negative_log_p_value',
     width = data[x_col]
     # width = -np.log10(data[x_col])
     ax.barh(bottom, width, **kwargs)
-    ax.set(yticks=bottom + 0.4, yticklabels=data.go_name,
+    ax.set(yticks=bottom + 0.4, yticklabels=data[yticklabels],
            xlabel='$-\log_{10}(q)$', ylim=(0, bottom.max() + 1))
     sns.despine()
     return ax
