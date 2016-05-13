@@ -2,6 +2,7 @@ from collections import defaultdict, Iterable
 import sys
 import warnings
 
+import numpy as np
 import pandas as pd
 from scipy.stats import hypergeom
 
@@ -135,13 +136,13 @@ class GeneOntologyData(object):
                 continue
 
             # Survival function is more accurate on small p-values
-            p_value = hypergeom.sf(len(features_in_go), n_all_genes,
+            log_p_value = hypergeom.logsf(len(features_in_go), n_all_genes,
                                    len(background_in_go),
                                    n_features_of_interest)
-            p_value = 0 if p_value < 0 else p_value
+            # p_value = 0 if p_value < 0 else p_value
             symbols = [cross_reference[f] if f in cross_reference else f for f
                        in features_in_go]
-            enrichment['p_value'][go_term] = p_value
+            enrichment['negative_log_p_value'][go_term] = -log_p_value
             enrichment['n_features_of_interest_in_go_term'][go_term] = len(
                 features_in_go)
             enrichment['n_background_in_go_term'][go_term] = len(
@@ -161,10 +162,11 @@ class GeneOntologyData(object):
             return
 
         # Bonferonni correction
-        enrichment_df['bonferonni_corrected_p_value'] = \
-            enrichment_df.p_value * enrichment_df.shape[0]
-        ind = enrichment_df['bonferonni_corrected_p_value'] < p_value_cutoff
+        enrichment_df['bonferonni_corrected_negative_log_p_value'] = \
+            enrichment_df['negative_log_p_value'] - np.log(enrichment_df.shape[0])
+        ind = enrichment_df['bonferonni_corrected_negative_log_p_value'] \
+              < np.log(p_value_cutoff)
         enrichment_df = enrichment_df.ix[ind]
-        enrichment_df = enrichment_df.sort(columns=['p_value'])
+        enrichment_df = enrichment_df.sort(columns=['negative_log_p_value'], ascending=False)
 
         return enrichment_df
