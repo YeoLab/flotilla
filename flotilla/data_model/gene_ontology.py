@@ -137,8 +137,8 @@ class GeneOntologyData(object):
 
             # Survival function is more accurate on small p-values
             log_p_value = hypergeom.logsf(len(features_in_go), n_all_genes,
-                                   len(background_in_go),
-                                   n_features_of_interest)
+                                          len(background_in_go),
+                                          n_features_of_interest)
             # p_value = 0 if p_value < 0 else p_value
             symbols = [cross_reference[f] if f in cross_reference else f for f
                        in features_in_go]
@@ -163,10 +163,12 @@ class GeneOntologyData(object):
 
         # Bonferonni correction
         enrichment_df['bonferonni_corrected_negative_log_p_value'] = \
-            enrichment_df['negative_log_p_value'] - np.log(enrichment_df.shape[0])
-        ind = enrichment_df['bonferonni_corrected_negative_log_p_value'] \
-              < np.log(p_value_cutoff)
+            enrichment_df['negative_log_p_value'] \
+            - np.log(enrichment_df.shape[0])
+        ind = enrichment_df['bonferonni_corrected_negative_log_p_value'
+                            ] < np.log(p_value_cutoff)
         enrichment_df = enrichment_df.ix[ind]
-        enrichment_df = enrichment_df.sort(columns=['negative_log_p_value'], ascending=False)
+        enrichment_df = enrichment_df.sort(
+            columns=['negative_log_p_value'], ascending=False)
 
         return enrichment_df
