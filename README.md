@@ -25,7 +25,7 @@ samples. We include utilities to perform common tasks on these large data matric
   * Classification and Regression
   * Outlier detection
   * Network graphs from covariance
-  * Hierarchical clustering
+  * Hierarchical clustering  
   
 And common tasks for biological data including:
 
