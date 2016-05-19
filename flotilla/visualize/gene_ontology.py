@@ -17,7 +17,7 @@ def plot_go_enrichment(x_col='bonferonni_corrected_negative_log_p_value',
                        data=None, ax=None, max_categories=10,
                        yticklabels='go_name',
                        **kwargs):
-    data = data.sort(x_col, ascending=True)
+    data = data.sort(x_col, ascending=False)
     data[x_col] = data[x_col].replace(0, np.nan)
     vmin = max(data[x_col].dropna().min(), MACHINE_EPSILON)
     if np.isnan(vmin):
