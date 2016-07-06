@@ -43,8 +43,8 @@ we have created tools for simple and streamlined data exploration including:
   * Dynamically adjusting parameters for analysis
   * Integrating external lists of features from the web or local files
 
-These empower the "wet lab" scientists to ask questions on their own and gives bioniformatics
-scientists a platform and share their analysis tools.
+These empower the "wet lab" scientists to ask questions on their own and gives bioinformatics
+scientists a platform to share their analysis tools.
 
 
 What flotilla is **not**
