@@ -21,7 +21,7 @@ __all__ = ['Study',
            'datapackage', 'go', 'util']
 
 
-__version__ = 'v0.3.2'
+__version__ = 'v0.4.0'
 
 
 # 18 cells, multiindex on the splicing data features,
