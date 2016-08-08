@@ -1,0 +1,9 @@
+v0.3.1 (August 8th, 2016
+-----------------------
+
+This is a patch release, with non-breaking changes from v0.3.1.
+
+Plotting
+~~~~~~~~
+
+- Removed filling NA of :py:func:`.visualize.gene_ontology.plot_go_enrichment` with arbitrary values
