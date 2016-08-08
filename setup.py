@@ -18,7 +18,7 @@ setup(
     url='http://github.com/YeoLab/flotilla',
     license='3-Clause BSD',
     author='olgabot',
-    author_email='obotvinn@ucsd.edu',
+    author_email='olgabot@ucsd.edu',
     description='Embark on a journey of single-cell data exploration.',
     # These are all in a specific order! If you add another package as
     # a depencency, please make sure that its dependencies come before it
