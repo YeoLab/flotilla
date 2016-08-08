@@ -1,5 +1,5 @@
 """
-setup
+Installation setup
 """
 
 from __future__ import (absolute_import, division,
@@ -9,7 +9,6 @@ from setuptools import setup
 from setuptools import find_packages
 
 import flotilla
-
 
 version = flotilla.__version__
 
