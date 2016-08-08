@@ -1,4 +1,10 @@
-from __future__ import division
+"""
+
+"""
+
+# from __future__ import division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 from collections import defaultdict
 from itertools import cycle
@@ -145,7 +151,7 @@ class DecompositionViz(object):
             markers = cycle(['o', '^', 's', 'v', '*', 'D', 'h'])
 
             def marker_factory():
-                return markers.next()
+                return next(markers)
 
             self.label_to_marker = defaultdict(marker_factory)
 
@@ -175,14 +181,20 @@ class DecompositionViz(object):
 
         ord = 2 if self.distance == 'L2' else 1
         self.magnitudes = self.loadings.apply(np.linalg.norm, ord=ord)
-        self.magnitudes.sort(ascending=False)
+        # TODO FutureWarning: sort is deprecated,
+        # TODO use sort_values(inplace=True) for INPLACE sorting
+        # self.magnitudes.sort(ascending=False)
+        self.magnitudes.sort_values(ascending=False, inplace=True)
 
         self.top_features = set([])
         self.pc_loadings_labels = {}
         self.pc_loadings = {}
         for pc in self.pcs:
             x = self.components_.ix[pc].copy()
-            x.sort(ascending=True)
+            # TODO FutureWarning: sort is deprecated,
+            # TODO use sort_values(inplace=True) for INPLACE sorting
+            # x.sort(ascending=True)
+            x.sort_values(ascending=True, inplace=True)
             half_features = int(self.n_top_pc_features / 2)
             if len(x) > self.n_top_pc_features:
                 a = x[:half_features]
@@ -511,7 +523,10 @@ class DecompositionViz(object):
         """
         half = int(n_features/2)
         components = self.components_.T
-        components = components.sort(columns='pc_1', ascending=False)
+        # TODO FutureWarning: sort(columns=....) is deprecated,
+        # TODO use sort_values(by=.....)
+        # components = components.sort(columns='pc_1', ascending=False)
+        components = components.sort_values(by='pc_1', ascending=False)
         components_subset = pd.concat(
             [components.iloc[:half, :n_components],
              components.iloc[-half:, :n_components]])

@@ -2,6 +2,9 @@
 General use utilities
 """
 
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import datetime
 from functools import wraps
 import errno
@@ -12,12 +15,9 @@ import sys
 import subprocess
 import functools
 import time
-import cPickle
+from six.moves import cPickle as pickle
 import gzip
 import tempfile
-
-import six
-
 import pandas as pd
 
 
@@ -69,7 +69,8 @@ def serve_ipython():
 
 def dict_to_str(dic):
     """join dictionary study_data into a string with that study_data"""
-    return "_".join([k + ":" + str(v) for (k, v) in dic.items()])
+    # sort so that result is predictable andfunction easier to test
+    return "_".join(sorted([k + ":" + str(v) for (k, v) in dic.items()]))
 
 
 def install_development_package(package_location):
@@ -105,7 +106,7 @@ def memoize(obj):
 
 
 class cached_property(object):
-    '''Decorator for read-only properties evaluated only once within TTL period.
+    """Decorator for read-only properties evaluated only once within TTL period.
 
     It can be used to created a cached property like this::
 
@@ -137,7 +138,7 @@ class cached_property(object):
     Stolen from:
     https://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties
 
-    '''
+    """
 
     def __init__(self, ttl=0):
         self.ttl = ttl
@@ -228,7 +229,7 @@ def write_pickle_df(df, file_name):
 
 def load_gzip_pickle_df(file_name):
     with gzip.open(file_name, 'r') as f:
-        return cPickle.load(f)
+        return pickle.load(f)
 
 
 def write_gzip_pickle_df(df, file_name):
@@ -295,7 +296,10 @@ def timestamp():
     return str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-class AssertionError(BaseException):
+# BaseException is not meant to be directly inherited by user-defined classes
+# (for that, use Exception)
+# class AssertionError(BaseException):
+class AssertionError(Exception):
     """ Assertion failed. """
 
     def __init__(self, *args, **kwargs):  # real signature unknown
@@ -308,7 +312,7 @@ class AssertionError(BaseException):
 
 
 def link_to_list(link):
-    six.print_('link', link)
+    print('link', link)
     try:
         assert link.startswith("http") or os.path.exists(os.path.abspath(link))
     except AssertionError:

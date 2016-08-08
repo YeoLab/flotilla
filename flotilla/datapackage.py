@@ -2,14 +2,23 @@
 Functions to deal with creation and loading of datapackages
 """
 
-import gzip
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from six import iteritems
+# Python 2 and 3 code for urllib module
+# http://python-future.org/compatible_idioms.html
+try:
+    from urllib.request import Request, build_opener
+except ImportError:
+    from urllib2 import Request, build_opener
+
+# import gzip      # TODO compression
 import json
 import os
-import string
+# import string
 import sys
-import urllib2
-
 import matplotlib as mpl
+
 
 FLOTILLA_DOWNLOAD_DIR = os.path.expanduser('~/flotilla_projects')
 
@@ -25,12 +34,14 @@ def datapackage_url_to_dict(datapackage_url):
 def check_if_already_downloaded(url,
                                 datapackage_name=None,
                                 download_dir=FLOTILLA_DOWNLOAD_DIR):
-    """If a url filename has already been downloaded, don't download it again.
+    """Download a url filename, unless it has already been downloaded.
+    Save into directory named 'datapackage_name' if provided,
+    otherwise save in directory named after value for key'name' in json file
 
     Parameters
     ----------
     url : str
-        HTTP url of a file you want to downlaod
+        HTTP url of a file you want to download
 
     Returns
     -------
@@ -45,8 +56,8 @@ def check_if_already_downloaded(url,
         pass
 
     if datapackage_name is None:
-        req = urllib2.Request(url)
-        opener = urllib2.build_opener()
+        req = Request(url)
+        opener = build_opener()
         opened_url = opener.open(req)
         datapackage = json.loads(opened_url.read())
         datapackage_name = datapackage['name']
@@ -65,8 +76,8 @@ def check_if_already_downloaded(url,
     if not os.path.isfile(filename):
         sys.stdout.write('{} has not been downloaded before.\n\tDownloading '
                          'now to {}\n'.format(url, filename))
-        req = urllib2.Request(url)
-        opener = urllib2.build_opener()
+        req = Request(url)
+        opener = build_opener()
         opened_url = opener.open(req)
         with open(filename, 'w') as f:
             f.write(opened_url.read())
@@ -103,11 +114,15 @@ def write_small_or_big_data(data, resource_name, datapackage_dir,
     info = {}
     if nrow * ncol < max_size:
         # If data is smallish, save as a gzipped csv
-        basename = '{}.csv.gz'.format(resource_name)
+        # TODO compression
+        # basename = '{}.csv.gz'.format(resource_name)
+        basename = '{}.csv'.format(resource_name)
         data_filename = '{}/{}'.format(datapackage_dir, basename)
-        with gzip.open(data_filename, 'wb') as f:
+
+        with open(data_filename, 'w') as f:
             data.to_csv(f)
-            info['compression'] = 'gzip'
+        # TODO compression
+        # info['compression'] = 'gzip'
         info['format'] = 'csv'
     else:
         # If data is big, save as an HDF file
@@ -144,7 +159,8 @@ def make_study_datapackage(study_name, metadata,
     """Example code for making a datapackage for a Study"""
     if len(study_name.split()) > 1:
         raise ValueError("Datapackage name cannot have any whitespace")
-    if set(string.uppercase) & set(study_name):
+    # if set(string.uppercase) & set(study_name):
+    if not study_name.lower() == study_name:
         raise ValueError("Datapackage can only contain lowercase letters")
 
     datapackage_dir = '{}/{}'.format(flotilla_dir, study_name)
@@ -183,12 +199,13 @@ def make_study_datapackage(study_name, metadata,
         resource.update(info)
 
         if kws is not None:
-            for key, value in kws.iteritems():
+            for key, value in iteritems(kws):
                 if key == 'phenotype_to_color':
                     value = dict((k, mpl.colors.rgb2hex(v))
                                  if isinstance(v, tuple) else
                                  (k, v)
-                                 for k, v in value.iteritems())
+                                 for k, v in iteritems(value)
+                                 )
                 resource[key] = value
 
     datapackage['resources'].append({'name': 'supplemental'})

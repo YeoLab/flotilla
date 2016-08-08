@@ -1,8 +1,10 @@
-"""plotting tools"""
+"""
+plotting tools
+"""
 
 import seaborn
 
-from .ipython_interact import Interactive
+from . import ipython_interact
 from .predict import PredictorBaseViz
 
 seaborn.set_style({'axes.axisbelow': True,
@@ -31,4 +33,4 @@ seaborn.set_style({'axes.axisbelow': True,
 
 seaborn.set_context('talk')
 
-__all__ = ['Interactive', 'PredictorBaseViz']
+__all__ = ['ipython_interact', 'PredictorBaseViz']

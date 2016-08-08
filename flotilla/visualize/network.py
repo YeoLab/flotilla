@@ -2,6 +2,9 @@
 Visualize results from :py:mod:flotilla.compute.network
 """
 
+from __future__ import absolute_import, division, print_function
+from __future__ import unicode_literals
+
 import sys
 
 import networkx as nx

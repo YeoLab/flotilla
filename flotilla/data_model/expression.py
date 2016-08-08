@@ -1,6 +1,10 @@
 """
 Data types related to gene expression, e.g. from RNA-Seq or microarrays.
 """
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import sys
 
 import numpy as np

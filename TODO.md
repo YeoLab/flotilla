@@ -35,3 +35,6 @@ Frigate
 
 
 
+
+
+python3 unicode compatibility in flotilla/test/data_model/test_data_model_gene_ontology.py

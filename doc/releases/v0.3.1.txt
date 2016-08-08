@@ -1,0 +1,9 @@
+v0.3.1 (May 17th, 2016)
+-----------------------
+
+This is a patch release, with non-breaking changes from v0.3.0.
+
+Miscellaneous
+~~~~~~~~~~~~~
+
+- Refactored for compatibility with both py2.7 and 3.5

@@ -1,3 +1,10 @@
+"""
+
+"""
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from itertools import chain
 from collections import Iterable
 import sys
@@ -26,12 +33,17 @@ class SplicingData(BaseData):
     excluded_label = '~0'
 
     def __init__(self, data,
-                 feature_data=None, binsize=0.1, outliers=None,
+                 feature_data=None,
+                 binsize=0.1,
+                 outliers=None,
                  feature_rename_col=None,
                  feature_ignore_subset_cols=None,
-                 excluded_max=0.2, included_min=0.8,
-                 pooled=None, predictor_config_manager=None,
-                 technical_outliers=None, minimum_samples=0,
+                 excluded_max=0.2,
+                 included_min=0.8,
+                 pooled=None,
+                 predictor_config_manager=None,
+                 technical_outliers=None,
+                 minimum_samples=0,
                  feature_expression_id_col=None):
         """Instantiate a object for percent spliced in (PSI) scores
 
@@ -56,13 +68,15 @@ class SplicingData(BaseData):
         sys.stdout.write("{}\tInitializing splicing\n".format(timestamp()))
 
         super(SplicingData, self).__init__(
-            data, feature_data=feature_data,
+            data,
+            feature_data=feature_data,
             feature_rename_col=feature_rename_col,
             feature_ignore_subset_cols=feature_ignore_subset_cols,
             outliers=outliers, pooled=pooled,
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
-            minimum_samples=minimum_samples, data_type='splicing')
+            minimum_samples=minimum_samples,
+            data_type='splicing')
         sys.stdout.write(
             "{}\tDone initializing splicing\n".format(timestamp()))
 

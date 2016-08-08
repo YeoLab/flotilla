@@ -1,3 +1,9 @@
+"""
+
+"""
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 import sys
 
 import pandas as pd
@@ -9,7 +15,8 @@ import numpy as np
 def adjust_nums(numerical_covariates, drop_idxs):
     # if we dropped some values, have to adjust those with a larger index.
     if numerical_covariates is None: return drop_idxs
-    return [nc - sum(nc < di for di in drop_idxs) for nc in numerical_covariates]
+    return [nc - sum(nc < di for di in drop_idxs)
+            for nc in numerical_covariates]
 
 def design_mat(mod, numerical_covariates, batch_levels):
     # require levels to make sure they are in the same order as we use in the
@@ -78,10 +85,13 @@ def combat(data, batch, model=None, numerical_covariates=None):
     n_array = float(sum(n_batches))
 
     # drop intercept
-    drop_cols = [cname for cname, inter in  ((model == 1).all()).iterkv() if inter == True]
+    drop_cols = [cname for cname, inter in  ((model == 1).all()).iterkv()
+                 if inter == True]
     drop_idxs = [list(model.columns).index(cdrop) for cdrop in drop_cols]
     model = model[[c for c in model.columns if not c in drop_cols]]
-    numerical_covariates = [list(model.columns).index(c) if isinstance(c, str) else c
+    numerical_covariates = [list(model.columns).index(c)
+                            if isinstance(c, str)
+                            else c
             for c in numerical_covariates if not c in drop_cols]
 
     design = design_mat(model, numerical_covariates, batch_levels)
@@ -89,18 +99,22 @@ def combat(data, batch, model=None, numerical_covariates=None):
     sys.stderr.write("Standardizing Data across genes.\n")
     B_hat = np.dot(np.dot(la.inv(np.dot(design.T, design)), design.T), data.T)
     grand_mean = np.dot((n_batches / n_array).T, B_hat[:n_batch,:])
-    var_pooled = np.dot(((data - np.dot(design, B_hat).T)**2), np.ones((n_array, 1)) / n_array)
+    var_pooled = np.dot(((data - np.dot(design, B_hat).T)**2),
+                        np.ones((n_array, 1)) / n_array)
 
-    stand_mean = np.dot(grand_mean.T.reshape((len(grand_mean), 1)), np.ones((1, n_array)))
+    stand_mean = np.dot(grand_mean.T.reshape((len(grand_mean), 1)),
+                        np.ones((1, n_array)))
     tmp = np.array(design.copy())
     tmp[:,:n_batch] = 0
     stand_mean  += np.dot(tmp, B_hat).T
 
-    s_data = ((data - stand_mean) / np.dot(np.sqrt(var_pooled), np.ones((1, n_array))))
+    s_data = ((data - stand_mean) / np.dot(np.sqrt(var_pooled),
+                                           np.ones((1, n_array))))
 
     sys.stderr.write("Fitting L/S model and finding priors\n")
     batch_design = design[design.columns[:n_batch]]
-    gamma_hat = np.dot(np.dot(la.inv(np.dot(batch_design.T, batch_design)), batch_design.T), s_data.T)
+    gamma_hat = np.dot(np.dot(la.inv(np.dot(batch_design.T, batch_design)),
+                              batch_design.T), s_data.T)
 
     delta_hat = []
 
@@ -138,7 +152,8 @@ def combat(data, batch, model=None, numerical_covariates=None):
         dsq = np.sqrt(delta_star[j,:])
         dsq = dsq.reshape((len(dsq), 1))
         denom =  np.dot(dsq, np.ones((1, n_batches[j])))
-        numer = np.array(bayesdata[batch_idxs] - np.dot(batch_design.ix[batch_idxs], gamma_star).T)
+        numer = np.array(bayesdata[batch_idxs]
+                         - np.dot(batch_design.ix[batch_idxs], gamma_star).T)
 
         bayesdata[batch_idxs] = numer / denom
    
@@ -157,10 +172,12 @@ def it_sol(sdat, g_hat, d_hat, g_bar, t2, a, b, conv=0.0001):
     while change > conv:
         #print g_hat.shape, g_bar.shape, t2.shape
         g_new = postmean(g_hat, g_bar, n, d_old, t2)
-        sum2 = ((sdat - np.dot(g_new.reshape((g_new.shape[0], 1)), np.ones((1, sdat.shape[1])))) ** 2).sum(axis=1)
+        sum2 = ((sdat - np.dot(g_new.reshape((g_new.shape[0], 1)),
+                               np.ones((1, sdat.shape[1])))) ** 2).sum(axis=1)
         d_new = postvar(sum2, n, a, b)
        
-        change = max((abs(g_new - g_old) / g_old).max(), (abs(d_new - d_old) / d_old).max())
+        change = max((abs(g_new - g_old) / g_old).max(),
+                     (abs(d_new - d_old) / d_old).max())
         g_old = g_new #.copy()
         d_old = d_new #.copy()
         count = count + 1
@@ -201,14 +218,16 @@ if __name__ == "__main__":
 	pheno = pData(bladderEset)
 	# add fake age variable for numeric
 	pheno$age = c(1:7, rep(1:10, 5))
-        write.table(data.frame(cel=rownames(pheno), pheno), row.names=F, quote=F, sep="\t", file="bladder-pheno.txt")
+        write.table(data.frame(cel=rownames(pheno), pheno),
+        row.names=F, quote=F, sep="\t", file="bladder-pheno.txt")
 
 	edata = exprs(bladderEset)
     write.table(edata, row.names=T, quote=F, sep="\t", file="bladder-expr.txt")
 	# use dataframe instead of matrix
 	mod = model.matrix(~as.factor(cancer) + age, data=pheno)
     t = Sys.time()
-	cdata = ComBat(dat=edata, batch=as.factor(pheno$batch), mod=mod, numCov=match("age", colnames(mod)))
+	cdata = ComBat(dat=edata, batch=as.factor(pheno$batch),
+	mod=mod, numCov=match("age", colnames(mod)))
     print(Sys.time() - t)
     print(cdata[1:5, 1:5])
     write.table(cdata, row.names=True, quote=F, sep="\t", file="r-batch.txt")

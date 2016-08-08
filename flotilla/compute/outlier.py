@@ -1,7 +1,9 @@
 """
 Detect outlier samples in data
 """
-import sys
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import sklearn
 import pandas as pd
@@ -37,9 +39,7 @@ class OutlierDetection(object):
                  random_state=0, **kwargs):
         if method is None:
             method = sklearn.svm.OneClassSVM
-
-        sys.stdout.write('SVM Kernel is: {}\n'.format(kernel))
-
+        print('SVM Kernel is:', kernel)
         kwargs.update(dict(nu=nu, kernel=kernel, gamma=gamma,
                            random_state=random_state))
         self.kwargs = kwargs

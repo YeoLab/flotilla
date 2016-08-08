@@ -1,3 +1,11 @@
+"""
+
+"""
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from six import iteritems
+
 from collections import defaultdict
 import sys
 import warnings
@@ -18,6 +26,7 @@ OUTLIER_COL = 'outlier'
 
 
 class MetaData(BaseData):
+
     def __init__(self, data, phenotype_order=None, phenotype_to_color=None,
                  phenotype_to_marker=None,
                  phenotype_col=PHENOTYPE_COL,
@@ -60,7 +69,7 @@ class MetaData(BaseData):
         # Convert color strings to non-default matplotlib colors
         if self.phenotype_to_color is not None:
             # colors = iter(self._colors)
-            for phenotype, color in self.phenotype_to_color.iteritems():
+            for phenotype, color in iteritems(self.phenotype_to_color):
                 try:
                     color = str_to_color[color]
                 except KeyError:
@@ -75,12 +84,12 @@ class MetaData(BaseData):
                 try:
                     marker = self.phenotype_to_marker[phenotype]
                 except KeyError:
-                    marker = markers.next()
+                    marker = next(markers)
                     sys.stderr.write(
                         '{} does not have marker style, '
                         'falling back on "{}"'.format(phenotype, marker))
                 if marker not in mpl.markers.MarkerStyle.filled_markers:
-                    correct_marker = markers.next()
+                    correct_marker = next(markers)
                     sys.stderr.write(
                         '{} is not a valid matplotlib marker style, '
                         'falling back on "{}"'.format(marker, correct_marker))
@@ -106,8 +115,8 @@ class MetaData(BaseData):
     @property
     def phenotype_order(self):
         if len(set(self._phenotype_order) & set(self.unique_phenotypes)) > 0:
-            return [v for v in self._phenotype_order if
-                    v in self.unique_phenotypes]
+            return list([v for v in self._phenotype_order
+                         if v in self.unique_phenotypes])
         else:
             return self._default_phenotype_order
 
@@ -120,31 +129,33 @@ class MetaData(BaseData):
 
     @property
     def phenotype_transitions(self):
-        return zip(self.phenotype_order[:-1], self.phenotype_order[1:])
+        return list(zip(self.phenotype_order[:-1], self.phenotype_order[1:]))
 
     @property
     def _colors(self):
-        return map(mpl.colors.rgb2hex,
-                   sns.color_palette('husl', n_colors=self.n_phenotypes))
+        return [mpl.colors.rgb2hex(rgb) for rgb
+                in sns.color_palette('husl', n_colors=self.n_phenotypes)
+                ]
 
     @property
     def _default_phenotype_to_color(self):
         colors = iter(self._colors)
 
         def color_factory():
-            return colors.next()
-
+            return next(colors)
         return defaultdict(color_factory)
 
     @property
     def phenotype_to_color(self):
         _default_phenotype_to_color = self._default_phenotype_to_color
-        all_phenotypes = self._phenotype_to_color.keys()
+        all_phenotypes = list(self._phenotype_to_color.keys())
         all_phenotypes.extend(self.phenotype_order)
-        return dict((k, self._phenotype_to_color[k])
-                    if k in self._phenotype_to_color else
-                    (k, _default_phenotype_to_color[k])
-                    for k in all_phenotypes)
+        return {k:
+                self._phenotype_to_color[k]
+                if k in self._phenotype_to_color
+                else _default_phenotype_to_color[k]
+                for k in all_phenotypes
+                }
 
     @phenotype_to_color.setter
     def phenotype_to_color(self, value):
@@ -160,14 +171,17 @@ class MetaData(BaseData):
         markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
 
         def marker_factory():
-            return markers.next()
+            return next(markers)
+
         _default_phenotype_to_marker = defaultdict(marker_factory)
-        all_phenotypes = self._phenotype_to_marker.keys()
+        all_phenotypes = list(self._phenotype_to_marker.keys())
         all_phenotypes.extend(self.phenotype_order)
-        return dict((k, self._phenotype_to_marker[k])
-                    if k in self._phenotype_to_marker else
-                    (k, _default_phenotype_to_marker[k])
-                    for k in all_phenotypes)
+        return {k:
+                self._phenotype_to_marker[k]
+                if k in self._phenotype_to_marker
+                else _default_phenotype_to_marker[k]
+                for k in all_phenotypes
+                }
 
     @phenotype_to_marker.setter
     def phenotype_to_marker(self, value):
@@ -180,7 +194,7 @@ class MetaData(BaseData):
             markers = cycle(['o', '^', 's', 'v', '*', 'D', ])
 
             def marker_factory():
-                return markers.next()
+                return next(markers)
 
             self._phenotype_to_marker = defaultdict(marker_factory)
 
@@ -190,10 +204,10 @@ class MetaData(BaseData):
 
     @property
     def sample_id_to_color(self):
-        return pd.Series(
-            dict((sample_id, self.phenotype_to_color[p])
-                 for sample_id, p in
-                 self.sample_id_to_phenotype.iteritems()))
+        dic = {sample_id: self.phenotype_to_color[p]
+               for sample_id, p in iteritems(self.sample_id_to_phenotype)
+               }
+        return pd.Series(dic)
 
     @property
     def sample_subsets(self):

@@ -1,5 +1,13 @@
+"""
+
+"""
+
+from __future__ import absolute_import, division, print_function
+from __future__ import unicode_literals
+
 from collections import defaultdict
 
+import numpy as np
 import pandas as pd
 import pandas.util.testing as pdt
 import pytest
@@ -69,14 +77,15 @@ class TestGeneOntologyData(object):
             if too_few_features or too_few_background:
                 continue
 
+            # TODO D.R.Y. this
             # Survival function is more accurate on small p-values
-            p_value = hypergeom.sf(len(features_in_go), n_all_genes,
-                                   len(background_in_go),
-                                   n_features_of_interest)
-            p_value = 0 if p_value < 0 else p_value
+            log_p_value = hypergeom.logsf(len(features_in_go), n_all_genes,
+                                          len(background_in_go),
+                                          n_features_of_interest)
+            # p_value = 0 if p_value < 0 else p_value
             symbols = [cross_reference[f] if f in cross_reference else f for f
                        in features_in_go]
-            enrichment['p_value'][go_term] = p_value
+            enrichment['negative_log_p_value'][go_term] = -log_p_value
             enrichment['n_features_of_interest_in_go_term'][go_term] = len(
                 features_in_go)
             enrichment['n_background_in_go_term'][go_term] = len(
@@ -91,15 +100,21 @@ class TestGeneOntologyData(object):
             enrichment['go_name'][go_term] = go_genes['name']
         enrichment_df = pd.DataFrame(enrichment)
 
+        # TODO D.R.Y. this
         # Bonferonni correction
-        enrichment_df['bonferonni_corrected_p_value'] = \
-            enrichment_df.p_value * enrichment_df.shape[0]
-        ind = enrichment_df['bonferonni_corrected_p_value'] < p_value_cutoff
+        enrichment_df['bonferonni_corrected_negative_log_p_value'] = \
+            enrichment_df['negative_log_p_value'] \
+            - np.log(enrichment_df.shape[0])
+        ind = enrichment_df['bonferonni_corrected_negative_log_p_value'
+                            ] < np.log(p_value_cutoff)
         enrichment_df = enrichment_df.ix[ind]
-        true_enrichment_df = enrichment_df.sort(columns=['p_value'])
+        true_enrichment_df = enrichment_df.sort(
+            columns=['negative_log_p_value'], ascending=False)
 
         pdt.assert_frame_equal(test_enrichment_df, true_enrichment_df)
 
+    # TODO : FOUR TESTS EXPECTED TO FAIL
+    ####################################
     @pytest.mark.xfail
     def test_invalid_background(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
@@ -126,6 +141,7 @@ class TestGeneOntologyData(object):
         features_of_interest = gene_ontology.all_genes[:10]
         gene_ontology.enrichment(features_of_interest,
                                  domain=['fake_domain1', 'fake_domain2'])
+    ##########################################################################
 
     def test_custom_domain_str(self, gene_ontology):
         features_of_interest = gene_ontology.all_genes[:10]
@@ -156,14 +172,15 @@ class TestGeneOntologyData(object):
             if too_few_features or too_few_background:
                 continue
 
+            # TODO D.R.Y. this
             # Survival function is more accurate on small p-values
-            p_value = hypergeom.sf(len(features_in_go), n_all_genes,
-                                   len(background_in_go),
-                                   n_features_of_interest)
-            p_value = 0 if p_value < 0 else p_value
+            log_p_value = hypergeom.logsf(len(features_in_go), n_all_genes,
+                                          len(background_in_go),
+                                          n_features_of_interest)
+            # p_value = 0 if p_value < 0 else p_value
             symbols = [cross_reference[f] if f in cross_reference else f for f
                        in features_in_go]
-            enrichment['p_value'][go_term] = p_value
+            enrichment['negative_log_p_value'][go_term] = -log_p_value
             enrichment['n_features_of_interest_in_go_term'][go_term] = len(
                 features_in_go)
             enrichment['n_background_in_go_term'][go_term] = len(
@@ -178,12 +195,17 @@ class TestGeneOntologyData(object):
             enrichment['go_name'][go_term] = go_genes['name']
         enrichment_df = pd.DataFrame(enrichment)
 
+        # TODO D.R.Y. this
         # Bonferonni correction
-        enrichment_df['bonferonni_corrected_p_value'] = \
-            enrichment_df.p_value * enrichment_df.shape[0]
-        ind = enrichment_df['bonferonni_corrected_p_value'] < p_value_cutoff
+        enrichment_df['bonferonni_corrected_negative_log_p_value'] = \
+            enrichment_df['negative_log_p_value'] \
+            - np.log(enrichment_df.shape[0])
+        ind = enrichment_df['bonferonni_corrected_negative_log_p_value'
+                            ] < np.log(p_value_cutoff)
         enrichment_df = enrichment_df.ix[ind]
-        true_enrichment_df = enrichment_df.sort(columns=['p_value'])
+
+        true_enrichment_df = enrichment_df.sort(
+            columns=['negative_log_p_value'], ascending=False)
 
         pdt.assert_frame_equal(test_enrichment_df, true_enrichment_df)
 
@@ -217,14 +239,15 @@ class TestGeneOntologyData(object):
             if too_few_features or too_few_background:
                 continue
 
+            # TODO D.R.Y this
             # Survival function is more accurate on small p-values
-            p_value = hypergeom.sf(len(features_in_go), n_all_genes,
-                                   len(background_in_go),
-                                   n_features_of_interest)
-            p_value = 0 if p_value < 0 else p_value
+            log_p_value = hypergeom.logsf(len(features_in_go), n_all_genes,
+                                          len(background_in_go),
+                                          n_features_of_interest)
+            # p_value = 0 if p_value < 0 else p_value
             symbols = [cross_reference[f] if f in cross_reference else f for f
                        in features_in_go]
-            enrichment['p_value'][go_term] = p_value
+            enrichment['negative_log_p_value'][go_term] = - log_p_value
             enrichment['n_features_of_interest_in_go_term'][go_term] = len(
                 features_in_go)
             enrichment['n_background_in_go_term'][go_term] = len(
@@ -239,12 +262,16 @@ class TestGeneOntologyData(object):
             enrichment['go_name'][go_term] = go_genes['name']
         enrichment_df = pd.DataFrame(enrichment)
 
+        # TODO D.R.Y. this
         # Bonferonni correction
-        enrichment_df['bonferonni_corrected_p_value'] = \
-            enrichment_df.p_value * enrichment_df.shape[0]
-        ind = enrichment_df['bonferonni_corrected_p_value'] < p_value_cutoff
+        enrichment_df['bonferonni_corrected_negative_log_p_value'] = \
+            enrichment_df['negative_log_p_value'] \
+            - np.log(enrichment_df.shape[0])
+        ind = enrichment_df['bonferonni_corrected_negative_log_p_value'
+                            ] < np.log(p_value_cutoff)
         enrichment_df = enrichment_df.ix[ind]
-        true_enrichment_df = enrichment_df.sort(columns=['p_value'])
+        true_enrichment_df = enrichment_df.sort(
+            columns=['negative_log_p_value'], ascending=False)
 
         pdt.assert_frame_equal(test_enrichment_df, true_enrichment_df)
 
@@ -274,14 +301,15 @@ class TestGeneOntologyData(object):
             if too_few_features or too_few_background:
                 continue
 
+            # TODO D.R.Y. this
             # Survival function is more accurate on small p-values
-            p_value = hypergeom.sf(len(features_in_go), n_all_genes,
-                                   len(background_in_go),
-                                   n_features_of_interest)
-            p_value = 0 if p_value < 0 else p_value
+            log_p_value = hypergeom.logsf(len(features_in_go), n_all_genes,
+                                          len(background_in_go),
+                                          n_features_of_interest)
+            # p_value = 0 if p_value < 0 else p_value
             symbols = [cross_reference[f] if f in cross_reference else f for f
                        in features_in_go]
-            enrichment['p_value'][go_term] = p_value
+            enrichment['negative_log_p_value'][go_term] = -log_p_value
             enrichment['n_features_of_interest_in_go_term'][go_term] = len(
                 features_in_go)
             enrichment['n_background_in_go_term'][go_term] = len(
@@ -296,12 +324,16 @@ class TestGeneOntologyData(object):
             enrichment['go_name'][go_term] = go_genes['name']
         enrichment_df = pd.DataFrame(enrichment)
 
+        # TODO D.R.Y. this
         # Bonferonni correction
-        enrichment_df['bonferonni_corrected_p_value'] = \
-            enrichment_df.p_value * enrichment_df.shape[0]
-        ind = enrichment_df['bonferonni_corrected_p_value'] < p_value_cutoff
+        enrichment_df['bonferonni_corrected_negative_log_p_value'] = \
+            enrichment_df['negative_log_p_value'] \
+            - np.log(enrichment_df.shape[0])
+        ind = enrichment_df['bonferonni_corrected_negative_log_p_value'
+                            ] < np.log(p_value_cutoff)
         enrichment_df = enrichment_df.ix[ind]
-        true_enrichment_df = enrichment_df.sort(columns=['p_value'])
+        true_enrichment_df = enrichment_df.sort(
+            columns=['negative_log_p_value'], ascending=False)
 
         pdt.assert_frame_equal(test_enrichment_df, true_enrichment_df)
 
@@ -335,8 +367,8 @@ class TestGeneOntologyData(object):
                                    len(background_in_go),
                                    n_features_of_interest)
             p_value = 0 if p_value < 0 else p_value
-            symbols = [cross_reference[f] if f in cross_reference else f for f
-                       in features_in_go]
+            symbols = [cross_reference[f] if f in cross_reference else f
+                       for f in features_in_go]
             enrichment['p_value'][go_term] = p_value
             enrichment['n_features_of_interest_in_go_term'][go_term] = len(
                 features_in_go)

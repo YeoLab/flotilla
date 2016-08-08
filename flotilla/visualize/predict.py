@@ -1,6 +1,10 @@
 """
 Visualize the result of a classifcation or regression algorithm on the data.
 """
+
+from __future__ import absolute_import, division, print_function
+from __future__ import unicode_literals
+
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 import matplotlib.pyplot as plt
 import seaborn as sns

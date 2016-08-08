@@ -5,6 +5,7 @@ dist
 .idea*
 .idea/*
 *DS_store
+.cache
 
 virtualenv
 
@@ -14,5 +15,9 @@ virtualenv
 .ipynb_checkpoints
 _build
 
+# data
+data
 # Shalek and Satija data
-nature12172-s1
+#nature12172-s1
+__*
+examples/__*

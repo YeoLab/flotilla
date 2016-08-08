@@ -1,3 +1,10 @@
+"""
+setup
+"""
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from setuptools import setup
 from setuptools import find_packages
 
@@ -22,7 +29,6 @@ setup(
                       "scipy >= 0.14",
                       "matplotlib >= 1.3.1",
                       "scikit-learn >= 0.13.0",
-                      "gspread",
                       "brewer2mpl",
                       "pymongo >= 2.7",
                       "ipython >= 2.0.0",

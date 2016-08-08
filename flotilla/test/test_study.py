@@ -1,11 +1,15 @@
 """
-This tests whether the Study object was created correctly. No
-computation or visualization tests yet.
+This tests whether the Study object was created correctly.
+No computation or visualization tests yet.
 """
+
+from __future__ import absolute_import, division, print_function
+from __future__ import unicode_literals
+from six import iteritems
+
 from collections import Iterable
 import itertools
 import json
-
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.testing as npt
@@ -15,14 +19,20 @@ import pytest
 import semantic_version
 
 
+##############################################################################
+# FIXTURES
+
+
 @pytest.fixture(params=['expression', 'splicing'])
 def data_type(request):
+    """data_type fixture"""
     return request.param
 
 
 @pytest.fixture(params=[None, 'subset1'],
                 ids=['color_samples_by_none', 'color_samples_by_subset1'])
 def color_samples_by(request, metadata_phenotype_col):
+    """color_samples_by fixture"""
     if request.param == 'phenotype':
         return metadata_phenotype_col
     else:
@@ -34,12 +44,15 @@ class TestStudy(object):
     # def n_groups(self):
     #     return 3
 
+    ##########################################################################
     @pytest.fixture
-    def study(self, metadata_data, metadata_kws,
+    def study(self,
+              metadata_data, metadata_kws,
               mapping_stats_data, mapping_stats_kws,
               expression_data, expression_kws,
               splicing_data, splicing_kws,
               gene_ontology_data):
+        """study fixture"""
         from flotilla import Study
 
         kwargs = {}
@@ -54,14 +67,15 @@ class TestStudy(object):
                     ('expression', expression_kws),
                     ('splicing', splicing_kws))
         for data_type, kws in kw_pairs:
-            for kw_name, kw_value in kws.iteritems():
+            for kw_name, kw_value in iteritems(kws):
                 kwargs['{}_{}'.format(data_type, kw_name)] = kw_value
 
         return Study(metadata,
                      mapping_stats_data=mapping_stats,
                      expression_data=expression,
                      splicing_data=splicing,
-                     gene_ontology_data=gene_ontology, **kwargs)
+                     gene_ontology_data=gene_ontology,
+                     **kwargs)
 
     def test_init(self, metadata_data):
         from flotilla import Study
@@ -100,16 +114,15 @@ class TestStudy(object):
                                      true_default_sample_subsets)
         pdt.assert_dict_equal(study.default_feature_subsets, {})
 
+    #########################################################################
     @pytest.mark.xfail
     def test_setattr(self, metadata_data):
         # warnings.simplefilter("error")
-
         from flotilla import Study
-
         study = Study(metadata_data.copy())
-
         study.pooled = 'asdf'
         # warnings.simplefilter('default')
+    #########################################################################
 
     def test_init_metdadata_kws(self, metadata_data, metadata_kws):
         # Also need to check for when these are NAs
@@ -234,8 +247,9 @@ class TestStudy(object):
                 study.expression.feature_subset_to_feature_ids(feature_subset,
                                                                rename=False)
         elif 'splicing'.startswith(data_type):
-            true_feature_subset = study.splicing.feature_subset_to_feature_ids(
-                feature_subset, rename=False)
+            true_feature_subset = \
+                study.splicing.feature_subset_to_feature_ids(feature_subset,
+                                                             rename=False)
         pdt.assert_numpy_array_equal(test_feature_subset, true_feature_subset)
 
     def test_sample_subset_to_sample_ids(self, study, sample_subset):
@@ -267,9 +281,11 @@ class TestStudy(object):
                 true_sample_subset = sample_subset
 
         pdt.assert_numpy_array_equal(true_sample_subset, test_sample_subset)
+    ##########################################################################
 
     @pytest.fixture(params=[True, False])
     def multiple_genes_per_event(self, request):
+        """multiple_genes_per_event fixture"""
         return request.param
 
     def test_tidy_splicing_with_expression(self, study, monkeypatch,
@@ -278,8 +294,16 @@ class TestStudy(object):
             df = study.splicing.feature_data.copy()
             events = df.index[:5]
             column = study.splicing.feature_expression_id_col
-            df.ix[events, column] = '{},{}'.format(
-                *study.expression.data.columns[:2])
+
+            # fixed for unicode issue
+            # when multiple_genes_per_event == True,
+            # was getting this kind of value in gene_name column:
+            # "b'gene_1',b'gene_2'"
+            # df.ix[events, column] = '{},{}'.format(
+            #     *study.expression.data.columns[:2])
+            df.ix[events, column] = u','.join(
+                study.expression.data.columns[:2])
+
             monkeypatch.setattr(study.splicing, 'feature_data', df)
         test = study.tidy_splicing_with_expression
 
@@ -297,10 +321,10 @@ class TestStudy(object):
                                 var_name=splicing_columns_name)
 
         s = splicing_common_id.dropna()
-
-        event_name_to_ensembl_ids = list(itertools.chain(
-            *[zip([k] * len(v.split(',')), v.split(',')) for k, v in
-              s.iteritems()]))
+        event_name_to_ensembl_ids = list(
+            itertools.chain(*[zip([k] * len(v.split(u',')), v.split(u','))
+                              for k, v in iteritems(s)])
+        )
         index, data = zip(*event_name_to_ensembl_ids)
         event_name_to_ensembl_ids = pd.Series(data, index=index,
                                               name=study._common_id)
@@ -441,8 +465,10 @@ class TestStudy(object):
         true_figsize = ax_width * ncols, 4 * nrows
         npt.assert_array_equal(true_figsize, test_figsize)
 
+    ##########################################################################
     @pytest.fixture(params=[True, False])
     def plot_violins(self, request):
+        """plot_violins fixture"""
         return request.param
 
     def test_plot_pca(self, study, data_type, plot_violins):
@@ -477,8 +503,10 @@ class TestStudy(object):
             feature2 = study.splicing.data.columns[-1]
         study.plot_two_features(feature1, feature2, data_type=data_type)
 
+    ##########################################################################
     @pytest.fixture(params=[None, 'gene'])
     def gene_of_interest(self, request, genes):
+        """gene_of_interest feature"""
         if request is not None:
             return genes[0]
         else:
@@ -494,6 +522,7 @@ class TestStudy(object):
                 data_type.split('_feature')[0], attribute)
         else:
             command = 'study.{}.{}'.format(data_type, attribute)
+        print("command :", command)
         return command
 
     def test_save(self, study, tmpdir):
@@ -501,7 +530,9 @@ class TestStudy(object):
 
         study_name = 'test_save'
         study.supplemental.expression_corr = study.expression.data.corr()
+        ###########################################
         study.save(study_name, flotilla_dir=tmpdir)
+        ###########################################
 
         assert len(tmpdir.listdir()) == 1
         save_dir = tmpdir.listdir()[0]
@@ -511,8 +542,7 @@ class TestStudy(object):
 
         assert study_name == save_dir.purebasename
 
-        # resource_keys_to_ignore = ('compression', 'format', 'path',
-        #                            'url')
+        # resource_keys_to_ignore = ('compression', 'format', 'path', 'url')
         keys_from_study = {'splicing': [],
                            'expression': ['thresh',
                                           'log_base',
@@ -534,38 +564,51 @@ class TestStudy(object):
         resource_names = keys_from_study.keys()
 
         # Add auto-generated attributes into the true datapackage
-        for name, keys in keys_from_study.iteritems():
+        for name, keys in iteritems(keys_from_study):
             resource = name_to_resource(test_datapackage, name)
             for key in keys:
                 command = self.get_data_eval_command(name, key)
                 test_value = resource[key]
                 true_value = eval(command)
                 if isinstance(test_value, dict):
+                    #############################################
                     pdt.assert_dict_equal(test_value, true_value)
                 elif isinstance(test_value, Iterable):
+                    ####################################################
                     pdt.assert_numpy_array_equal(test_value, true_value)
 
         for name in resource_names:
             resource = name_to_resource(test_datapackage, name)
-            path = '{}.csv.gz'.format(name)
+            # TODO compression
+            # path = '{}.csv.gz'.format(name)
+            path = '{}.csv'.format(name)
+            ###############################
             assert resource['path'] == path
-            test_df = pd.read_csv('{}/{}/{}'.format(tmpdir, study_name, path),
-                                  index_col=0, compression='gzip')
+            test_df = pd.read_csv(
+                '{}/{}/{}'.format(tmpdir, study_name, path), index_col=0
+                # TODO compressiom
+                # , compression='gzip'
+                )
             command = self.get_data_eval_command(name, 'data_original')
             true_df = eval(command)
+
             pdt.assert_frame_equal(test_df, true_df)
 
         version = semantic_version.Version(study.version)
         version.patch += 1
+        ##############################################################
         assert str(version) == test_datapackage['datapackage_version']
         assert study_name == test_datapackage['name']
 
+    # TODO D.R.Y. this with the above
     def test_save_supplemental(self, study, tmpdir):
         from flotilla.datapackage import name_to_resource
 
         study_name = 'test_save_supplemental'
         study.supplemental.expression_corr = study.expression.data.corr()
+        ###########################################
         study.save(study_name, flotilla_dir=tmpdir)
+        ###########################################
 
         assert len(tmpdir.listdir()) == 1
         save_dir = tmpdir.listdir()[0]
@@ -576,10 +619,17 @@ class TestStudy(object):
         supplemental = name_to_resource(test_datapackage, 'supplemental')
         for resource in supplemental['resources']:
             name = resource['name']
-            path = '{}.csv.gz'.format(name)
+            # TODO compression
+            # path = '{}.csv.gz'.format(name)
+            path = '{}.csv'.format(name)
+            ###############################
             assert resource['path'] == path
             full_path = '{}/{}/{}'.format(tmpdir, study_name, path)
-            test_df = pd.read_csv(full_path, index_col=0, compression='gzip')
+            test_df = pd.read_csv(full_path,
+                                  index_col=0
+                                  # TODO compressiom
+                                  # , compression='gzip'
+                                  )
             command = self.get_data_eval_command('supplemental', name)
             true_df = eval(command)
             pdt.assert_frame_equal(test_df, true_df)

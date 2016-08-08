@@ -1,5 +1,11 @@
 [![Stories in Ready](https://badge.waffle.io/yeolab/flotilla.png?label=ready&title=Ready)](https://waffle.io/yeolab/flotilla)
-[![Build Status](https://travis-ci.org/YeoLab/flotilla.svg?branch=master)](https://travis-ci.org/YeoLab/flotilla)[![Coverage Status](https://img.shields.io/coveralls/YeoLab/flotilla.svg?style=flat)](https://coveralls.io/r/YeoLab/flotilla?branch=master)[![License](https://img.shields.io/pypi/l/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)[![Downloads](https://img.shields.io/pypi/dm/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)[![Latest Version](https://img.shields.io/pypi/v/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)[![DOI](https://img.shields.io/badge/DOI-10.5281%20%2F%20zenodo.12230-blue.svg)](http://dx.doi.org/10.5281/zenodo.12230)
+[![Build Status](https://travis-ci.org/YeoLab/flotilla.svg?branch=master)](https://travis-ci.org/YeoLab/flotilla)
+[![Coverage Status](https://img.shields.io/coveralls/YeoLab/flotilla.svg?style=flat)](https://coveralls.io/r/YeoLab/flotilla?branch=master)
+[![License](https://img.shields.io/pypi/l/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)
+[![Downloads](https://img.shields.io/pypi/dm/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)
+[![Latest Version](https://img.shields.io/pypi/v/flotilla.svg?style=flat)](https://pypi.python.org/pypi/flotilla/)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%20%2F%20zenodo.12230-blue.svg)](http://dx.doi.org/10.5281/zenodo.12230)
+[![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/repo/YeoLab/flotilla)
 
 flotilla
 ========
@@ -19,7 +25,7 @@ samples. We include utilities to perform common tasks on these large data matric
   * Classification and Regression
   * Outlier detection
   * Network graphs from covariance
-  * Hierarchical clustering
+  * Hierarchical clustering  
   
 And common tasks for biological data including:
 
@@ -151,7 +157,11 @@ Problems? Questions?
 
 We invite your input! Please leave any feedback on our [issues page](https://github.com/YeoLab/flotilla/issues).
 
-![NumFOCUS logo](http://numfocus.org/theme/img/numfocus_logo.png)
+![NumFOCUS logo](https://www.continuum.io/sites/default/files/numfocus_logo.png)
 
 Proudly sponsored by a NumFOCUS John Hunter Technical Fellowship to Olga
 Botvinnik.
+
+
+
+

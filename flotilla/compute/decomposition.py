@@ -2,6 +2,9 @@
 Perform various dimensionality reduction algorithms on data
 """
 
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import sys
 
 from sklearn import decomposition
@@ -95,7 +98,7 @@ class DataFrameReducerBase(object):
         return self
 
     def transform(self, X):
-        """Transform a matrix into the compoment space
+        """Transform a matrix into the component space
 
         Parameters
         ----------
@@ -146,7 +149,8 @@ class DataFrameReducerBase(object):
 
 
 class DataFramePCA(DataFrameReducerBase, decomposition.PCA):
-    """Perform Principal Components Analaysis on a DataFrame"""
+    """Perform Principal Components Analaysis on a DataFrame
+    """
     pass
 
 
