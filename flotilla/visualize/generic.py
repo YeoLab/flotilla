@@ -224,9 +224,18 @@ SHARED_KWS = 'order', 'hue', 'hue_order', 'orient', 'color', 'palette', 'saturat
 
 
 def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dist=True,
-                ax=None, shared_kws=None, show_n=True,
+                ax=None, shared_kws=None, n_sep='\n',
                 violinplot_kws=dict(palette='Set2', cut=True, linewidth=1.5),
                 stripplot_kws=dict(jitter=True, linewidth=0.5)):
+    """Plot a feature's distribution and observations
+
+    Parameters
+    ----------
+
+    n_sep : str
+        The separator to use when showing "n", the number of observations for each x-group.
+        If None, the number of observations is not shown.
+    """
     if not dist and not dots:
         raise ValueError("Must specify at least one of 'dots' or 'dist' to be True!")
 
@@ -254,12 +263,12 @@ def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dis
     if dots:
         dot_plotter(x=x, y=y, data=data, ax=ax, **stripplot_kws)
 
-    if show_n:
+    if n_sep is not None:
         sizes = data.groupby(x).size()
         if not shared_kws.has_key('order') or shared_kws['order'] is None:
             order = sizes.keys()
 
-        xticklabels = ['{0}\nn={1}'.format(group, sizes[group])
+        xticklabels = ['{group}{sep}n={n}'.format(group=group, sep=n_sep, n=sizes[group])
                             if group in sizes else group for group in order]
         ax.set(xticklabels=xticklabels)
     return ax
