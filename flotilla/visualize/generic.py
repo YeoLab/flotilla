@@ -222,8 +222,9 @@ def cdfplot(data, nbins=100, ax=None, log=False, **kwargs):
 
 SHARED_KWS = 'order', 'hue', 'hue_order', 'orient', 'color', 'palette', 'saturation', 'ax'
 
+
 def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dist=True,
-                ax=None, shared_kws=None,
+                ax=None, shared_kws=None, show_n=True,
                 violinplot_kws=dict(palette='Set2', cut=True, linewidth=1.5),
                 stripplot_kws=dict(jitter=True, linewidth=0.5)):
     if not dist and not dots:
@@ -253,4 +254,12 @@ def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dis
     if dots:
         dot_plotter(x=x, y=y, data=data, ax=ax, **stripplot_kws)
 
+    if show_n:
+        sizes = data.groupby(x).size()
+        if not shared_kws.has_key('order') or shared_kws['order'] is None:
+            order = sizes.keys()
+
+        xticklabels = ['{0}\nn={1}'.format(group, sizes[group])
+                            if group in sizes else group for group in order]
+        ax.set(xticklabels=xticklabels)
     return ax
