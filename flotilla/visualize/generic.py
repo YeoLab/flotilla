@@ -4,6 +4,7 @@
 
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+import warnings
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -217,3 +218,39 @@ def cdfplot(data, nbins=100, ax=None, log=False, **kwargs):
         return ax.semilogx(bin_edges[1:], cumulative, basex=10, **kwargs)
     else:
         return ax.plot(bin_edges[1:], cumulative, **kwargs)
+
+
+SHARED_KWS = 'order', 'hue', 'hue_order', 'orient', 'color', 'palette', 'saturation', 'ax'
+
+def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dist=True,
+                ax=None, shared_kws=None,
+                violinplot_kws=dict(palette='Set2', cut=True, linewidth=1.5),
+                stripplot_kws=dict(jitter=True, linewidth=0.5)):
+    if not dist and not dots:
+        raise ValueError("Must specify at least one of 'dots' or 'dist' to be True!")
+
+    if dist_kind.startswith('violin'):
+        dist_plotter = sns.violinplot
+    elif dist_kind.startswith('box'):
+        dist_plotter = sns.boxplot
+
+    if dot_kind.startswith('strip'):
+        dot_plotter = sns.stripplot
+    elif dot_kind.startswith('swarm'):
+        dot_plotter = sns.swarmplot
+
+    if ax is None:
+        ax = plt.gca()
+
+    shared_kws = {} if shared_kws is None else shared_kws
+    for key, value in shared_kws.items():
+        if key not in SHARED_KWS:
+            warnings.warn('Provided shared keyword argument "{key}" not considered shared'.format(key=key))
+        violinplot_kws.setdefault(key, value)
+        stripplot_kws.setdefault(key, value)
+
+    dist_plotter(x=x, y=y, data=data, ax=ax, **violinplot_kws)
+    if dots:
+        dot_plotter(x=x, y=y, data=data, ax=ax, **stripplot_kws)
+
+    return ax
