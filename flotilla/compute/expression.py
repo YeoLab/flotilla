@@ -197,6 +197,12 @@ class TwoWayGeneComparisonLocal(object):
                          .format(len(self.expressed_genes),
                                  *self.sample_names))
 
+def maybe_perform_test(test, *args):
+    """If test raises valuerror, return np.nan for both statistic and """
+    try:
+        return test(*args)
+    except ValueError:
+        return np.nan, np.nan
 
 def differential_expression(data, groupby):
     """Calculate probability that a feature's values are skewed towards a group
@@ -226,15 +232,18 @@ def differential_expression(data, groupby):
     n_groups = len(groupby.groupby(groupby).size())
     if n_groups == 2:
         statistical_test = stats.mannwhitneyu
+        statistic_name = 'U'
     elif n_groups > 2:
         statistical_test = stats.kruskal
+        statistic_name = "H"
     else:
         raise ValueError('Must have at least two groups to calculate '
                          'differential expression')
+
+    index = ['{}_statistic'.format(statistic_name), 'p_value']
     de_results = dict(
-        (col, pd.Series(statistical_test(
-            *[s for group, s in series.groupby(groupby)]),
-            index=['U_statistic', 'p_value']))
+        (col, pd.Series(maybe_perform_test(statistical_test,
+            *[s for group, s in series.groupby(groupby)]), index=index))
         for col, series in data.iteritems())
     de_results = pd.DataFrame.from_records(de_results).T
     de_results['bonferonni_p_value'] = de_results.p_value*de_results.shape[0]
