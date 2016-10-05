@@ -225,8 +225,8 @@ SHARED_KWS = 'order', 'hue', 'hue_order', 'orient', 'color', 'palette', 'saturat
 
 def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dist=True,
                 ax=None, shared_kws=None, n_sep='\n',
-                violinplot_kws=dict(palette='Set2', cut=True, linewidth=1.5),
-                stripplot_kws=dict(jitter=True, linewidth=0.5)):
+                distplot_kws=dict(palette='Set2', cut=True, linewidth=1.5),
+                dotplot_kws=dict(jitter=True, linewidth=0.5)):
     """Plot a feature's distribution and observations
 
     Parameters
@@ -256,12 +256,12 @@ def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dis
     for key, value in shared_kws.items():
         if key not in SHARED_KWS:
             warnings.warn('Provided shared keyword argument "{key}" not considered shared'.format(key=key))
-        violinplot_kws.setdefault(key, value)
-        stripplot_kws.setdefault(key, value)
+        distplot_kws.setdefault(key, value)
+        dotplot_kws.setdefault(key, value)
 
-    dist_plotter(x=x, y=y, data=data, ax=ax, **violinplot_kws)
+    dist_plotter(x=x, y=y, data=data, ax=ax, **distplot_kws)
     if dots:
-        dot_plotter(x=x, y=y, data=data, ax=ax, **stripplot_kws)
+        dot_plotter(x=x, y=y, data=data, ax=ax, **dotplot_kws)
 
     if n_sep is not None:
         sizes = data.groupby(x).size()
