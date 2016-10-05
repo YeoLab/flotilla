@@ -4,6 +4,7 @@
 
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+import warnings
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -217,3 +218,63 @@ def cdfplot(data, nbins=100, ax=None, log=False, **kwargs):
         return ax.semilogx(bin_edges[1:], cumulative, basex=10, **kwargs)
     else:
         return ax.plot(bin_edges[1:], cumulative, **kwargs)
+
+
+SHARED_KWS = 'order', 'hue', 'hue_order', 'orient', 'color', 'palette', \
+             'saturation', 'ax'
+
+
+def featureplot(x, y, data, dist='violin', dots='swarm', ax=None,
+                shared_kws=None, n_sep='\n',
+                distplot_kws=dict(palette='Set2', cut=True, linewidth=1.5),
+                dotplot_kws=dict(jitter=True, linewidth=0.5)):
+    """Plot a feature's distribution and observations
+
+    Parameters
+    ----------
+
+    n_sep : str
+        The separator to use when showing "n", the number of observations for
+        each x-group. If None, the number of observations is not shown.
+    """
+    if dist is None and dots is None:
+        raise ValueError("Must specify at least one of 'dots' or 'dist' to a "
+                         "valid plot type!")
+
+    if dist is not None:
+        if dist.startswith('violin'):
+            dist_plotter = sns.violinplot
+        elif dist.startswith('box'):
+            dist_plotter = sns.boxplot
+
+    if dots is not None:
+        if dots.startswith('strip'):
+            dot_plotter = sns.stripplot
+        elif dots.startswith('swarm'):
+            dot_plotter = sns.swarmplot
+
+    if ax is None:
+        ax = plt.gca()
+
+    shared_kws = {} if shared_kws is None else shared_kws
+    for key, value in shared_kws.items():
+        if key not in SHARED_KWS:
+            warnings.warn('Provided shared keyword argument "{key}" not '
+                          'considered shared'.format(key=key))
+        distplot_kws.setdefault(key, value)
+        dotplot_kws.setdefault(key, value)
+
+    dist_plotter(x=x, y=y, data=data, ax=ax, **distplot_kws)
+    if dots:
+        dot_plotter(x=x, y=y, data=data, ax=ax, **dotplot_kws)
+
+    if n_sep is not None:
+        sizes = data.groupby(x).size()
+        if not shared_kws.has_key('order') or shared_kws['order'] is None:
+            order = sizes.keys()
+
+        xticklabels = ['{group}{sep}n={n}'.format(group=group, sep=n_sep,
+                                                  n=sizes[group])
+                       if group in sizes else group for group in order]
+        ax.set(xticklabels=xticklabels)
+    return ax
