@@ -220,11 +220,12 @@ def cdfplot(data, nbins=100, ax=None, log=False, **kwargs):
         return ax.plot(bin_edges[1:], cumulative, **kwargs)
 
 
-SHARED_KWS = 'order', 'hue', 'hue_order', 'orient', 'color', 'palette', 'saturation', 'ax'
+SHARED_KWS = 'order', 'hue', 'hue_order', 'orient', 'color', 'palette', \
+             'saturation', 'ax'
 
 
-def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dist=True,
-                ax=None, shared_kws=None, n_sep='\n',
+def featureplot(x, y, data, dist='violin', dots='swarm', ax=None,
+                shared_kws=None, n_sep='\n',
                 distplot_kws=dict(palette='Set2', cut=True, linewidth=1.5),
                 dotplot_kws=dict(jitter=True, linewidth=0.5)):
     """Plot a feature's distribution and observations
@@ -233,21 +234,24 @@ def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dis
     ----------
 
     n_sep : str
-        The separator to use when showing "n", the number of observations for each x-group.
-        If None, the number of observations is not shown.
+        The separator to use when showing "n", the number of observations for
+        each x-group. If None, the number of observations is not shown.
     """
-    if not dist and not dots:
-        raise ValueError("Must specify at least one of 'dots' or 'dist' to be True!")
+    if dist is None and dots is None:
+        raise ValueError("Must specify at least one of 'dots' or 'dist' to a "
+                         "valid plot type!")
 
-    if dist_kind.startswith('violin'):
-        dist_plotter = sns.violinplot
-    elif dist_kind.startswith('box'):
-        dist_plotter = sns.boxplot
+    if dist is not None:
+        if dist.startswith('violin'):
+            dist_plotter = sns.violinplot
+        elif dist.startswith('box'):
+            dist_plotter = sns.boxplot
 
-    if dot_kind.startswith('strip'):
-        dot_plotter = sns.stripplot
-    elif dot_kind.startswith('swarm'):
-        dot_plotter = sns.swarmplot
+    if dots is not None:
+        if dots.startswith('strip'):
+            dot_plotter = sns.stripplot
+        elif dots.startswith('swarm'):
+            dot_plotter = sns.swarmplot
 
     if ax is None:
         ax = plt.gca()
@@ -255,7 +259,8 @@ def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dis
     shared_kws = {} if shared_kws is None else shared_kws
     for key, value in shared_kws.items():
         if key not in SHARED_KWS:
-            warnings.warn('Provided shared keyword argument "{key}" not considered shared'.format(key=key))
+            warnings.warn('Provided shared keyword argument "{key}" not '
+                          'considered shared'.format(key=key))
         distplot_kws.setdefault(key, value)
         dotplot_kws.setdefault(key, value)
 
@@ -268,7 +273,8 @@ def featureplot(x, y, data, dist_kind='violin', dot_kind='strip', dots=True, dis
         if not shared_kws.has_key('order') or shared_kws['order'] is None:
             order = sizes.keys()
 
-        xticklabels = ['{group}{sep}n={n}'.format(group=group, sep=n_sep, n=sizes[group])
-                            if group in sizes else group for group in order]
+        xticklabels = ['{group}{sep}n={n}'.format(group=group, sep=n_sep,
+                                                  n=sizes[group])
+                       if group in sizes else group for group in order]
         ax.set(xticklabels=xticklabels)
     return ax
