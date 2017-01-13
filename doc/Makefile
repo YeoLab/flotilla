@@ -23,6 +23,7 @@ I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
+	@echo "  install    to install packages required for building docs"
 	@echo "  html       to make standalone HTML files"
 	@echo "  dirhtml    to make HTML files named index.html in directories"
 	@echo "  singlehtml to make a single large HTML file"
@@ -56,6 +57,10 @@ clean:
 	rm -rf gallery*
 	rm -rf generated
 	rm -rf apidoc
+
+install:
+	conda install --yes --file conda_requirements.txt
+	pip install -r requirements.txt
 
 html:
 	cp ../examples/*.ipynb tutorial/;
