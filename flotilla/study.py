@@ -1514,7 +1514,8 @@ class Study(object):
                 {'rename_col': self.splicing.feature_rename_col,
                  'ignore_subset_cols':
                      self.splicing.feature_ignore_subset_cols,
-                 'expression_id_col': self.splicing.feature_expression_id_col}
+                 'expression_id_col': self.splicing.feature_expression_id_col,
+                 'feature_shortener_col': self.splicing.feature_shortener_col}
         except AttributeError:
             splicing_feature_data = None
             splicing_feature_kws = None
