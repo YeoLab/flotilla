@@ -393,7 +393,7 @@ class SplicingData(BaseData):
             feature_ids].str.split(',').dropna().values))
 
     def expression_to_splicing_id(self, expression_ids):
-        ind = self.feature_data.ensembl_id.map(
+        ind = self.feature_data[self.feature_expression_id_col].map(
             lambda x: expression_ids.isin(
                 x.split(',')).any() if isinstance(x, str) else False)
 
