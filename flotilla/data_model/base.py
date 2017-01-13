@@ -319,7 +319,7 @@ class BaseData(object):
         if feature_id in self.feature_renamer_series.values:
             feature_ids = self.feature_renamer_series[
                 self.feature_renamer_series ==
-                feature_id].index
+                feature_id].index.unique()
             return self.data.columns.intersection(feature_ids)
         elif feature_id in self.data.columns:
             return feature_id
