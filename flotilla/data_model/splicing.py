@@ -44,7 +44,7 @@ class SplicingData(BaseData):
                  predictor_config_manager=None,
                  technical_outliers=None,
                  minimum_samples=0,
-                 feature_expression_id_col=None):
+                 feature_expression_id_col=None, **kwargs):
         """Instantiate a object for percent spliced in (PSI) scores
 
         Parameters
@@ -76,7 +76,7 @@ class SplicingData(BaseData):
             technical_outliers=technical_outliers,
             predictor_config_manager=predictor_config_manager,
             minimum_samples=minimum_samples,
-            data_type='splicing')
+            data_type='splicing', **kwargs)
         sys.stdout.write(
             "{}\tDone initializing splicing\n".format(timestamp()))
 
