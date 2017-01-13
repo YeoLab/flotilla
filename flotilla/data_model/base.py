@@ -88,7 +88,7 @@ class BaseData(object):
                  outliers=None,
                  pooled=None,
                  predictor_config_manager=None,
-                 data_type=None):
+                 data_type=None, feature_shortener_col=None):
         """Abstract base class for biological measurements
 
         Parameters
@@ -184,6 +184,8 @@ class BaseData(object):
         # if self.feature_data is None:
         # self.feature_data = pd.DataFrame(index=self.data.columns)
         self.feature_rename_col = feature_rename_col
+        self.feature_shortener_col = feature_shortener_col
+
         self.default_feature_sets = []
 
         if self.feature_data is not None and self.feature_rename_col is not \
@@ -300,6 +302,13 @@ class BaseData(object):
         else:
             return pd.Series(self.data_original.columns.values,
                              index=self.data_original.columns)
+
+    def feature_shortenter(self, feature_id):
+        if self.feature_shortener_col is not None:
+            return self.feature_data.loc[
+                feature_id, self.feature_shortener_col].unique()
+        else:
+            return feature_id
 
     def maybe_renamed_to_feature_id(self, feature_id):
         """To be able to give a simple gene name, e.g. "RBFOX2" and get the
@@ -1029,7 +1038,7 @@ class BaseData(object):
         # renamed = self.feature_renamer(feature_id)
         # TODO check switch to unicode
         # title = b'{}\n{}'.format(renamed, b'\n'.join(feature_id.split(b'@')))
-        title = renamed + u"\n" + u"\n".join(feature_id.split(u'@'))
+        title = renamed # + u"\n" + u"\n".join(feature_id.split(u'@'))
 
         violinplot(singles, groupby=phenotype_groupby, color_ordered=color,
                    pooled=pooled, order=phenotype_order,

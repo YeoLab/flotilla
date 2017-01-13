@@ -105,13 +105,13 @@ class Study(object):
                  expression_log_base=None,
                  expression_thresh=-np.inf,
                  expression_plus_one=False,
-                 expression_correct_batch_effects=False,
 
                  splicing_data=None,
                  splicing_feature_data=None,
                  splicing_feature_rename_col=None,
                  splicing_feature_ignore_subset_cols=None,
                  splicing_feature_expression_id_col=None,
+                 splicing_feature_shortener_col=None,
 
                  mapping_stats_data=None,
                  mapping_stats_number_mapped_col=None,
@@ -364,7 +364,8 @@ class Study(object):
                 technical_outliers=self.technical_outliers,
                 minimum_samples=metadata_minimum_samples,
                 feature_ignore_subset_cols=splicing_feature_ignore_subset_cols,
-                feature_expression_id_col=splicing_feature_expression_id_col)
+                feature_expression_id_col=splicing_feature_expression_id_col,
+                feature_shortener_col=splicing_feature_shortener_col)
         else:
             self.splicing = None
 
