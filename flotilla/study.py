@@ -296,6 +296,7 @@ class Study(object):
         else:
             self.technical_outliers = None
             self.mapping_stats = None
+
         feature_data_none = expression_feature_data is None or \
             splicing_feature_data is None
 
@@ -303,15 +304,6 @@ class Study(object):
             sys.stdout.write('{}\tLoading species metadata from '
                              '~/flotilla_packages\n'.format(timestamp()))
             species_kws = self.load_species_data(self.species, self.readers)
-            expression_feature_data = species_kws.pop(
-                'expression_feature_data',
-                None)
-            expression_feature_rename_col = species_kws.pop(
-                'expression_feature_rename_col', None)
-            splicing_feature_data = species_kws.pop('splicing_feature_data',
-                                                    None)
-            splicing_feature_rename_col = species_kws.pop(
-                'splicing_feature_rename_col', None)
 
             if expression_feature_data is None:
                 expression_feature_data = species_kws.pop(
