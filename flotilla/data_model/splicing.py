@@ -389,8 +389,9 @@ class SplicingData(BaseData):
 
     def splicing_to_expression_id(self, feature_ids):
         """Get the gene ids corresponding to the splicing ids provided"""
-        return list(chain(*self.feature_data[self.feature_expression_id_col][
-            feature_ids].str.split(',').dropna().values))
+        return list(chain(*self.feature_data.loc[
+            feature_ids, self.feature_expression_id_col].str.split(',')
+                          .dropna().values))
 
     def expression_to_splicing_id(self, expression_ids):
         ind = self.feature_data[self.feature_expression_id_col].map(
