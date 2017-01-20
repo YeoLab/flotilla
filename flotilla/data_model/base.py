@@ -236,7 +236,7 @@ class BaseData(object):
         if x in self.feature_renamer_series.index:
             rename = self.feature_renamer_series[x]
             if isinstance(rename, pd.Series):
-                return rename.values[0]
+                return ','.join(sorted(rename.values))
             else:
                 return rename
         else:
