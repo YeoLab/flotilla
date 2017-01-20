@@ -1095,7 +1095,7 @@ class BaseData(object):
         for feature_id, ax in zip(feature_ids, axes_iter):
             # if self.data_type == 'expression':
             # axes = [axes]
-
+            print(feature_id)
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=ax,
