@@ -1098,7 +1098,8 @@ class BaseData(object):
             # if self.data_type == 'expression':
             # axes = [axes]
             letter = string.ascii_letters[i]
-            print(letter, feature_id)
+            print('{letter}: {feature_id}'.format(
+                letter=letter, feature_id=feature_id))
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=ax,
