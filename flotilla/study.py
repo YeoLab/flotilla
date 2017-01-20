@@ -1074,7 +1074,8 @@ class Study(object):
         n_total = self.celltype_event_counts.sum(axis=1).astype(float)
         return n_unique / n_total * 100
 
-    def plot_event(self, feature_id, sample_subset=None, col_wrap=4):
+    def plot_event(self, feature_id, sample_subset=None, col_wrap=4,
+                   ax_width=None):
         """Plot the violinplot and NMF transitions of a splicing event
         """
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
@@ -1084,7 +1085,8 @@ class Study(object):
             phenotype_order=self.phenotype_order,
             color=self.phenotype_color_ordered,
             phenotype_to_color=self.phenotype_to_color,
-            phenotype_to_marker=self.phenotype_to_marker, col_wrap=col_wrap)
+            phenotype_to_marker=self.phenotype_to_marker, col_wrap=col_wrap,
+            ax_width=None)
 
     def plot_gene(self, feature_id, sample_subset=None, col_wrap=4):
         sample_ids = self.sample_subset_to_sample_ids(sample_subset)
