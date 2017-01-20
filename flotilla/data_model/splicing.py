@@ -95,7 +95,7 @@ class SplicingData(BaseData):
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
                      phenotype_to_marker=None,
-                     violinplot_kws=None, col_wrap=4):
+                     violinplot_kws=None, col_wrap=4, ax_width=None):
         violinplot_kws = {} if violinplot_kws is None else violinplot_kws
         violinplot_kws.setdefault('bw', 0.2)
         violinplot_kws.setdefault('ylim', (0, 1))
