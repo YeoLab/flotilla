@@ -8,7 +8,9 @@ from __future__ import (absolute_import, division,
 from six import text_type
 
 import sys
+import string
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -1092,15 +1094,21 @@ class BaseData(object):
             axesgrid = np.array([axesgrid])
 
         axes_iter = axesgrid.flat
-        for feature_id, ax in zip(feature_ids, axes_iter):
+        for i, feature_id, ax in enumerate(zip(feature_ids, axes_iter)):
             # if self.data_type == 'expression':
             # axes = [axes]
-            print(feature_id)
+            letter = string.ascii_letters[i]
+            print(letter, feature_id)
             self._violinplot(feature_id, sample_ids=sample_ids,
                              phenotype_groupby=phenotype_groupby,
                              phenotype_order=phenotype_order, ax=ax,
                              color=color, **violinplot_kws)
             sns.despine()
+
+            # Add a letter to indicate which feature id goes with which axes
+            ax.text(-0.15, 1.05, letter, transform=ax.transAxes,
+                    horizontalalignment='center', verticalalignment='bottom',
+                    size=mpl.rcParams['axes.labelsize'])
 
         # Turn off empty axes (ones that were never iterated over and thus
         # have nothing plotted on them)
