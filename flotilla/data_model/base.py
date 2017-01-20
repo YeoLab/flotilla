@@ -1094,7 +1094,7 @@ class BaseData(object):
             axesgrid = np.array([axesgrid])
 
         axes_iter = axesgrid.flat
-        for i, feature_id, ax in enumerate(zip(feature_ids, axes_iter)):
+        for i, (feature_id, ax) in enumerate(zip(feature_ids, axes_iter)):
             # if self.data_type == 'expression':
             # axes = [axes]
             letter = string.ascii_letters[i]
