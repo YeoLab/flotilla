@@ -1060,7 +1060,7 @@ class BaseData(object):
                      phenotype_order=None, color=None,
                      phenotype_to_color=None,
                      phenotype_to_marker=None,
-                     violinplot_kws=None, col_wrap=4):
+                     violinplot_kws=None, col_wrap=4, ax_width=None):
         """
         Plot the violinplot of a feature.
         """
@@ -1075,7 +1075,8 @@ class BaseData(object):
 
         grouped = phenotype_groupby.groupby(phenotype_groupby)
         single_violin_width = 0.5
-        ax_width = max(4, single_violin_width*grouped.size().shape[0])
+        if ax_width is None:
+            ax_width = max(4, single_violin_width*grouped.size().shape[0])
 
         naxes = len(feature_ids)
         nrows = 1
