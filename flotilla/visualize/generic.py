@@ -113,7 +113,7 @@ def violinplot(singles, groupby, color_ordered=None, ax=None,
     to_set = {'yticks': yticks, 'ylim': ylim}
     to_set = {k: v for k, v in to_set.items() if v is not None}
     ax.set(**to_set)
-    ax.set_title(title, fontsize=10)
+    ax.set_title(title)
     return ax
 
 
